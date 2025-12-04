@@ -1,0 +1,56 @@
+Estoy elaborando una aplicacion haciendo uso de metodologias agiles, en este caso SCRUM.
+
+La empresa para la cual estamos haciendo la aplicacion se llama DUMI, en este caso planificamos estos sprints:
+Sprint 1: del 19 de septiembre al 9 de octubre de 2025 (15 días laborables).
+Sprint 2: del 10 al 30 de octubre de 2025 (15 días laborables).
+Sprint 3: del 31 de octubre al 20 de noviembre de 2025 (15 días laborables).
+Sprint 4: del 21 de noviembre al 4 de diciembre de 2025 (10 días laborables), reservado para correcciones finales y despliegue.
+
+Somos 4 desarrolladores:
+Jeancarlo Morales
+Eduardo Mamani
+Alba Malca
+Carlos Diaz
+
+Los sprints tratan de lo siguiente:
+Sprint 1 – 19 sep → 9 oct (gestión interna: autenticación, clientes y prendas)
+Sprint 2 – 10 oct → 30 oct (gestion interna: ordenes y cotizaciones)
+Sprint 3 - 31 oct → 20 nov (e-commerce: catálogo, carrito y pasarela de pagos)
+Sprint 4 - 21 nov → 4 dic (correcciones finales y despliegue)
+
+Tienes un Jira.csv en el que estan todas las historias epicas, historias de usuario y subtareas.
+
+Lo que sucede es que el backend ya esta casi terminado, y lo que sucede es que el frontend se ha descuidado totalmente, no tenemos nada hecho.
+
+Entonces lo primero que tenemos que haer es planificar todas las subtareas para cada historia de usuario.
+Tienen que tener el formato:
+[FRONTEND] Nombre de la subtarea.
+Ademas debes darme la descripcion de la subtarea.
+Estas subtareas deben tener sentido con el sprint a desarrollar, con como se conectara con el backend y con las tecnologias a usar, en este caso para el frontend estamos usando Nextjs, react, tailwindcss, shadcnui y typescript, haciendo uso de server actions y una especie de arquitectura de carpetas y archivos nueva.
+Ejemplo, tenemos 3 tipos de roles en el sistema que para la gestion interna son: admin y seller, y para el e-commerce: cliente.
+Por lo cual hay una historia epica llamada autenticación y usuarios, dentro tiene 4 historias de usuario, una de ellas es "Inicio de sesion de administrador" con descripcion "Yo como administrador quiero iniciar sesión en la aplicación para acceder al panel de gestión interna." Criterios de aceptacion:
+Se debe mostrar un formulario con campos de correo electrónico y contraseña.
+El correo electrónico debe tener un formato válido y la contraseña debe tener al menos 6 caracteres.
+Al ingresar credenciales válidas, el usuario es redirigido al panel de administración.
+Si el correo o contraseña son incorrectos, se muestra un mensaje de error sin revelar información sensible.
+Casos de prueba:
+Ingresar un correo válido y contraseña correcta y verificar que se accede al panel.
+Ingresar un correo con formato incorrecto (ej. usuario@) y comprobar que aparece un mensaje de error de validación.
+Ingresar credenciales incorrectas y verificar que no se accede y se muestra un mensaje de error.
+
+Entonces debemos configurarle las subtareas frontend, deben ser atomicas, pero no tanto, me refiero, con esta historia de usuario, por ejemplo:
+[FRONTEND] Crear el formulario SignInForm ....
+[FRONTEND] Definir form schema con zod
+[FRONTEND] Implementar validaciones en el formulario SignInForm ...
+[FRONTEND] Crear Data Access Layer para autenticación ...
+[FRONTEND] Crear server action ...
+[FRONTEND] Crear funcion handleSubmit ...
+
+Y cosas asi, porque estamos haciendo uso de nextjs, shadcnui, tailwindcss y typescript. Por ejemplo en ele formulario SignInForm usariamos componentes de shadcn como Form, Input, Button.
+Para el data access layer, lo hacemos para el manejo de la logica de acceso a rutas privadas dentro del frontend, hay rutas que solo el admin puede acceder y el seller no, el admin puede acceder a todo, pero el seller no y eso se definio en el Jira.csv.
+https://nextjs.org/docs/app/guides/authentication#creating-a-data-access-layer-dal
+Necesariamos funciones como verifySession, getUser, requireRole, getRedirectPathByRole, requireAnyRole y cosas asi. Ademas, que una vez hecho el sign-in el admin debe ser redirigido a /admin mientras que el seller debe ser redirigido a /seller.
+
+Quiero que vayamos poco a poco, no todo de golpe, comencemos con la primer historia de usuario.
+
+Ademas, tienes un archivo dumi.apidog.json que contiene todos los endpoints disponibles de la API.
