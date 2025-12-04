@@ -6,8 +6,10 @@ import { usePathname } from 'next/navigation'
 import {
   ChevronRight,
   ChevronsUpDown,
+  FileText,
   LayoutDashboard,
   LogOut,
+  PackageIcon,
   Settings,
   Shirt,
   UserRound,
@@ -92,6 +94,16 @@ const adminNavGroups: NavGroup[] = [
         title: 'Prendas',
         href: '/admin/clothes',
         icon: Shirt
+      },
+      {
+        title: 'Cotizaciones',
+        href: '/admin/quotations',
+        icon: FileText
+      },
+      {
+        title: 'Órdenes',
+        href: '/admin/orders',
+        icon: PackageIcon
       }
     ]
   }
@@ -106,6 +118,32 @@ const sellerNavGroups: NavGroup[] = [
         title: 'Dashboard',
         href: '/seller',
         icon: LayoutDashboard
+      }
+    ]
+  },
+  {
+    title: 'Gestión',
+    icon: Settings,
+    items: [
+      {
+        title: 'Clientes',
+        href: '/seller/clients',
+        icon: UserRound
+      },
+      {
+        title: 'Prendas',
+        href: '/seller/clothes',
+        icon: Shirt
+      },
+      {
+        title: 'Cotizaciones',
+        href: '/seller/quotations',
+        icon: FileText
+      },
+      {
+        title: 'Órdenes',
+        href: '/seller/orders',
+        icon: PackageIcon
       }
     ]
   }
