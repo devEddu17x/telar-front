@@ -112,13 +112,13 @@ export function ImagesUpload() {
 
   return (
     <div className='space-y-4'>
-      {/* Zona de drop */}
+      {/* Zona de drag & drop */}
       <div
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         className={cn(
-          'relative flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed p-6 transition-all',
+          'relative flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed p-8 transition-all',
           isDragging
             ? 'border-primary bg-primary/5'
             : 'border-muted-foreground/25 hover:border-primary/50 hover:bg-muted/50'
@@ -126,7 +126,7 @@ export function ImagesUpload() {
       >
         <input
           type='file'
-          accept={ACCEPTED_IMAGE_TYPES.join(',')}
+          accept='image/png,image/jpeg,image/webp'
           multiple
           onChange={handleFileChange}
           className='hidden'
@@ -138,95 +138,109 @@ export function ImagesUpload() {
         >
           <div
             className={cn(
-              'rounded-full p-3 transition-colors',
+              'rounded-full p-4 transition-colors',
               isDragging ? 'bg-primary/10' : 'bg-muted'
             )}
           >
             {isDragging ? (
-              <Upload className='text-primary h-6 w-6' />
+              <Upload className='text-primary h-8 w-8' />
             ) : (
-              <ImagePlus className='text-muted-foreground h-6 w-6' />
+              <ImagePlus className='text-muted-foreground h-8 w-8' />
             )}
           </div>
           <div className='text-center'>
-            <p className='text-sm font-medium'>
+            <p className='font-medium'>
               {isDragging ? 'Suelta las imágenes aquí' : 'Subir imágenes'}
             </p>
-            <p className='text-muted-foreground mt-1 text-xs'>
+            <p className='text-muted-foreground mt-1 text-sm'>
               Arrastra o haz clic • PNG, JPG, WebP • Máx. 5MB
             </p>
           </div>
         </label>
       </div>
 
-      {/* Grid de imágenes */}
+      {/* Contador y grid de imágenes */}
       {fields.length > 0 && (
-        <div className='space-y-2'>
-          <p className='text-muted-foreground text-xs'>
-            {fields.length} imagen{fields.length !== 1 ? 'es' : ''} • La primera
-            será la imagen principal
+        <div className='space-y-3'>
+          {/* Contador de imágenes */}
+          <p className='text-muted-foreground text-sm'>
+            {fields.length} imagen{fields.length !== 1 ? 'es' : ''} subida
+            {fields.length !== 1 ? 's' : ''} • La primera será la imagen
+            principal
           </p>
-          <div className='grid grid-cols-2 gap-2'>
-            {fields.map((field, index) => (
-              <div
-                key={field.id}
-                className={cn(
-                  'group relative overflow-hidden rounded-lg border transition-all',
-                  index === 0 && 'ring-primary/50 col-span-2 ring-2'
-                )}
-              >
+
+          {/* Grid de thumbnails */}
+          <div className='grid grid-cols-4 gap-3'>
+            {fields.map((field, index) => {
+              const isPrimary = index === 0
+
+              return (
                 <div
+                  key={field.id}
                   className={cn(
-                    'relative',
-                    index === 0 ? 'aspect-video' : 'aspect-square'
+                    'group relative overflow-hidden rounded-lg border',
+                    isPrimary && 'border-primary col-span-2 row-span-2'
                   )}
                 >
-                  <Image
-                    src={field.preview}
-                    alt={`Preview ${index + 1}`}
-                    fill
-                    className='object-cover'
-                  />
+                  <div className='relative aspect-square'>
+                    <Image
+                      src={field.preview}
+                      alt={`Preview ${index + 1}`}
+                      fill
+                      className='object-cover'
+                    />
 
-                  {/* Overlay con acciones */}
-                  <div className='absolute inset-0 flex items-center justify-center gap-2 bg-black/50 opacity-0 transition-opacity group-hover:opacity-100'>
-                    {index !== 0 && (
-                      <Button
-                        type='button'
-                        variant='secondary'
-                        size='sm'
-                        onClick={() => setAsPrimary(index)}
-                        className='h-8'
-                      >
+                    {/* Badge "Principal" solo en la primera imagen */}
+                    {isPrimary && (
+                      <Badge className='bg-primary absolute top-2 left-2'>
                         <Star className='mr-1 h-3 w-3' />
                         Principal
-                      </Button>
+                      </Badge>
                     )}
-                    <Button
-                      type='button'
-                      variant='destructive'
-                      size='sm'
-                      onClick={() => {
-                        URL.revokeObjectURL(field.preview)
-                        remove(index)
-                      }}
-                      className='h-8'
-                    >
-                      <Trash2 className='mr-1 h-3 w-3' />
-                      Eliminar
-                    </Button>
-                  </div>
 
-                  {/* Badge principal */}
-                  {index === 0 && (
-                    <Badge className='bg-primary absolute top-2 left-2'>
-                      <Star className='mr-1 h-3 w-3' />
-                      Principal
-                    </Badge>
-                  )}
+                    {/* Overlay con botones (aparece en hover) */}
+                    <div
+                      className={cn(
+                        'absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100',
+                        isPrimary ? 'gap-2' : 'gap-1'
+                      )}
+                    >
+                      {/* Botón para establecer como principal (solo si no es la primera) */}
+                      {!isPrimary && (
+                        <Button
+                          type='button'
+                          variant='secondary'
+                          size='icon'
+                          onClick={() => setAsPrimary(index)}
+                          title='Establecer como principal'
+                          className='h-8 w-8'
+                        >
+                          <Star className='h-4 w-4' />
+                        </Button>
+                      )}
+
+                      {/* Botón para eliminar */}
+                      <Button
+                        type='button'
+                        variant='destructive'
+                        size={isPrimary ? 'sm' : 'icon'}
+                        onClick={() => {
+                          URL.revokeObjectURL(field.preview)
+                          remove(index)
+                        }}
+                        title='Eliminar imagen'
+                        className={isPrimary ? '' : 'h-8 w-8'}
+                      >
+                        <Trash2
+                          className={isPrimary ? 'mr-1 h-4 w-4' : 'h-4 w-4'}
+                        />
+                        {isPrimary && 'Eliminar'}
+                      </Button>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       )}

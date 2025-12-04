@@ -9,6 +9,8 @@ import { ClothesTable } from './clothes-table'
 
 interface ClothesSearchResultsProps {
   searchParams: SearchClothesParams & { q?: string; status?: string }
+  basePath?: string
+  canEdit?: boolean
 }
 
 function ClothesTableSkeleton() {
@@ -23,7 +25,9 @@ function ClothesTableSkeleton() {
 }
 
 async function ClothesSearchResultsContent({
-  searchParams
+  searchParams,
+  basePath,
+  canEdit
 }: ClothesSearchResultsProps) {
   const { q, size, gender, status } = searchParams
 
@@ -52,15 +56,28 @@ async function ClothesSearchResultsContent({
     ? await searchClothes(params)
     : await searchClothes({})
 
-  return <ClothesTable clothes={clothes} hasFilters={hasFilters} />
+  return (
+    <ClothesTable
+      clothes={clothes}
+      hasFilters={hasFilters}
+      basePath={basePath}
+      canEdit={canEdit}
+    />
+  )
 }
 
 export function ClothesSearchResults({
-  searchParams
+  searchParams,
+  basePath,
+  canEdit
 }: ClothesSearchResultsProps) {
   return (
     <Suspense fallback={<ClothesTableSkeleton />}>
-      <ClothesSearchResultsContent searchParams={searchParams} />
+      <ClothesSearchResultsContent
+        searchParams={searchParams}
+        basePath={basePath}
+        canEdit={canEdit}
+      />
     </Suspense>
   )
 }

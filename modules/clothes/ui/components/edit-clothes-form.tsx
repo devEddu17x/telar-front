@@ -211,7 +211,14 @@ export function EditClothesForm({ clothes }: EditClothesFormProps) {
                   <FormControl>
                     <Switch
                       checked={field.value}
-                      onCheckedChange={field.onChange}
+                      onCheckedChange={checked => {
+                        field.onChange(checked)
+                        if (checked) {
+                          form.setValue('isInEcommerce', false, {
+                            shouldDirty: true
+                          })
+                        }
+                      }}
                     />
                   </FormControl>
                 </FormItem>
@@ -235,7 +242,12 @@ export function EditClothesForm({ clothes }: EditClothesFormProps) {
                   <FormControl>
                     <Switch
                       checked={field.value}
-                      onCheckedChange={field.onChange}
+                      onCheckedChange={checked => {
+                        field.onChange(checked)
+                        if (checked) {
+                          form.setValue('isDraft', false, { shouldDirty: true })
+                        }
+                      }}
                       disabled={watchedIsDraft}
                     />
                   </FormControl>

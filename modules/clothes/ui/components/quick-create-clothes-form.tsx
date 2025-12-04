@@ -39,7 +39,13 @@ import { Spinner } from '@/components/ui/spinner'
 
 import { ImagesUpload } from './images-upload'
 
-export function QuickCreateClothesForm() {
+interface QuickCreateClothesFormProps {
+  basePath?: string
+}
+
+export function QuickCreateClothesForm({
+  basePath = '/admin/clothes'
+}: QuickCreateClothesFormProps) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
 
@@ -94,13 +100,13 @@ export function QuickCreateClothesForm() {
             toast.error(
               'Prenda creada pero hubo un error al subir las imágenes'
             )
-            router.push('/admin/clothes')
+            router.push(basePath)
             return
           }
         }
 
         toast.success('Borrador creado exitosamente')
-        router.push('/admin/clothes')
+        router.push(basePath)
       } else {
         toast.error(result.error || 'Error al crear el borrador')
       }

@@ -130,7 +130,15 @@ export function EditImagesSection({
     })
   }
 
+  const isLastImage = images.length === 1
+
   const handleDeleteClick = (url: string) => {
+    if (isLastImage) {
+      toast.error(
+        'No puedes eliminar la última imagen. Agrega otra imagen primero.'
+      )
+      return
+    }
     setImageToDelete(url)
     setDeleteDialogOpen(true)
   }
@@ -185,7 +193,6 @@ export function EditImagesSection({
 
           await Promise.all(uploadPromises)
 
-          // Limpiar previews
           newImages.forEach(img => URL.revokeObjectURL(img.preview))
           setNewImages([])
 
@@ -212,65 +219,13 @@ export function EditImagesSection({
           </CardDescription>
         </CardHeader>
         <CardContent className='space-y-4'>
-          {/* Imágenes existentes */}
-          {images.length > 0 && (
-            <div className='grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4'>
-              {images.map((image, index) => (
-                <div
-                  key={image.url}
-                  className={cn(
-                    'group relative overflow-hidden rounded-lg border transition-all',
-                    index === 0 && 'ring-primary/50 col-span-2 ring-2'
-                  )}
-                >
-                  <div
-                    className={cn(
-                      'relative',
-                      index === 0 ? 'aspect-video' : 'aspect-square'
-                    )}
-                  >
-                    <Image
-                      src={image.url}
-                      alt={`Imagen ${index + 1}`}
-                      fill
-                      className='object-cover'
-                    />
-
-                    {/* Overlay con acciones */}
-                    <div className='absolute inset-0 flex items-center justify-center gap-2 bg-black/50 opacity-0 transition-opacity group-hover:opacity-100'>
-                      <Button
-                        type='button'
-                        variant='destructive'
-                        size='sm'
-                        onClick={() => handleDeleteClick(image.url)}
-                        className='h-8'
-                        disabled={isPending}
-                      >
-                        <Trash2 className='mr-1 h-3 w-3' />
-                        Eliminar
-                      </Button>
-                    </div>
-
-                    {/* Badge principal */}
-                    {index === 0 && (
-                      <Badge className='bg-primary absolute top-2 left-2'>
-                        <Star className='mr-1 h-3 w-3' />
-                        Principal
-                      </Badge>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Zona de drop para nuevas imágenes */}
+          {/* Zona de drag & drop */}
           <div
             onDrop={handleDrop}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             className={cn(
-              'relative flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed p-6 transition-all',
+              'relative flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed p-8 transition-all',
               isDragging
                 ? 'border-primary bg-primary/5'
                 : 'border-muted-foreground/25 hover:border-primary/50 hover:bg-muted/50'
@@ -278,7 +233,7 @@ export function EditImagesSection({
           >
             <input
               type='file'
-              accept={ACCEPTED_IMAGE_TYPES.join(',')}
+              accept='image/png,image/jpeg,image/webp'
               multiple
               onChange={handleFileChange}
               className='hidden'
@@ -290,41 +245,102 @@ export function EditImagesSection({
             >
               <div
                 className={cn(
-                  'rounded-full p-3 transition-colors',
+                  'rounded-full p-4 transition-colors',
                   isDragging ? 'bg-primary/10' : 'bg-muted'
                 )}
               >
                 {isDragging ? (
-                  <Upload className='text-primary h-6 w-6' />
+                  <Upload className='text-primary h-8 w-8' />
                 ) : (
-                  <ImagePlus className='text-muted-foreground h-6 w-6' />
+                  <ImagePlus className='text-muted-foreground h-8 w-8' />
                 )}
               </div>
               <div className='text-center'>
-                <p className='text-sm font-medium'>
-                  {isDragging
-                    ? 'Suelta las imágenes aquí'
-                    : 'Agregar más imágenes'}
+                <p className='font-medium'>
+                  {isDragging ? 'Suelta las imágenes aquí' : 'Agregar imágenes'}
                 </p>
-                <p className='text-muted-foreground mt-1 text-xs'>
+                <p className='text-muted-foreground mt-1 text-sm'>
                   Arrastra o haz clic • PNG, JPG, WebP • Máx. 5MB
                 </p>
               </div>
             </label>
           </div>
 
-          {/* Preview de nuevas imágenes */}
+          {/* Grid de imágenes existentes */}
+          {images.length > 0 && (
+            <div className='grid grid-cols-4 gap-3'>
+              {images.map((image, index) => {
+                const isPrimary = index === 0
+
+                return (
+                  <div
+                    key={image.url}
+                    className={cn(
+                      'group relative overflow-hidden rounded-lg border',
+                      isPrimary && 'border-primary col-span-2 row-span-2'
+                    )}
+                  >
+                    <div className='relative aspect-square'>
+                      <Image
+                        src={image.url}
+                        alt={`Imagen ${index + 1}`}
+                        fill
+                        className='object-cover'
+                      />
+
+                      {/* Badge "Principal" solo en la primera imagen */}
+                      {isPrimary && (
+                        <Badge className='bg-primary absolute top-2 left-2'>
+                          <Star className='mr-1 h-3 w-3' />
+                          Principal
+                        </Badge>
+                      )}
+
+                      {/* Overlay con botón eliminar (aparece en hover) */}
+                      <div
+                        className={cn(
+                          'absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100',
+                          isPrimary ? 'gap-2' : 'gap-1'
+                        )}
+                      >
+                        <Button
+                          type='button'
+                          variant={isLastImage ? 'secondary' : 'destructive'}
+                          size={isPrimary ? 'sm' : 'icon'}
+                          onClick={() => handleDeleteClick(image.url)}
+                          disabled={isPending || isLastImage}
+                          title={
+                            isLastImage
+                              ? 'No puedes eliminar la última imagen'
+                              : 'Eliminar imagen'
+                          }
+                          className={isPrimary ? '' : 'h-8 w-8'}
+                        >
+                          <Trash2
+                            className={isPrimary ? 'mr-1 h-4 w-4' : 'h-4 w-4'}
+                          />
+                          {isPrimary && (isLastImage ? 'Única' : 'Eliminar')}
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+
+          {/* Preview de nuevas imágenes por subir */}
           {newImages.length > 0 && (
             <div className='space-y-3'>
               <p className='text-muted-foreground text-sm'>
                 {newImages.length} imagen{newImages.length !== 1 ? 'es' : ''}{' '}
                 nueva{newImages.length !== 1 ? 's' : ''} por subir
               </p>
-              <div className='grid grid-cols-2 gap-2 sm:grid-cols-4'>
+              <div className='grid grid-cols-4 gap-3'>
                 {newImages.map((image, index) => (
                   <div
                     key={image.preview}
-                    className='group relative overflow-hidden rounded-lg border'
+                    className='group border-primary/50 relative overflow-hidden rounded-lg border border-dashed'
                   >
                     <div className='relative aspect-square'>
                       <Image
@@ -337,12 +353,12 @@ export function EditImagesSection({
                         <Button
                           type='button'
                           variant='destructive'
-                          size='sm'
+                          size='icon'
                           onClick={() => removeNewImage(index)}
-                          className='h-8'
+                          title='Quitar'
+                          className='h-8 w-8'
                         >
-                          <Trash2 className='mr-1 h-3 w-3' />
-                          Quitar
+                          <Trash2 className='h-4 w-4' />
                         </Button>
                       </div>
                     </div>
@@ -390,7 +406,7 @@ export function EditImagesSection({
             <AlertDialogAction
               onClick={handleConfirmDelete}
               disabled={isPending}
-              className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
+              className='bg-destructive hover:bg-destructive/90 text-white'
             >
               {isPending ? <Spinner className='mr-2 h-4 w-4' /> : null}
               Eliminar

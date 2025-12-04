@@ -18,6 +18,12 @@ export async function deleteImage(
   const accessToken = cookieStore.get(AUTH_COOKIES.ACCESS_TOKEN)?.value
   const antiCsrf = cookieStore.get(AUTH_COOKIES.ANTI_CSRF)?.value
 
+  console.log('[deleteImage] Starting delete for:', { clothesId, url })
+  console.log(
+    '[deleteImage] API URL:',
+    `${API_URL}/clothes/${clothesId}/images`
+  )
+
   try {
     const response = await fetch(`${API_URL}/clothes/${clothesId}/images`, {
       method: 'DELETE',
@@ -26,8 +32,11 @@ export async function deleteImage(
         Cookie: `${AUTH_COOKIES.ACCESS_TOKEN}=${accessToken}`,
         'anti-csrf': antiCsrf || ''
       },
-      body: JSON.stringify({ url })
+      body: JSON.stringify({ url }),
+      credentials: 'include'
     })
+
+    console.log('[deleteImage] Response status:', response.status)
 
     if (response.status === 404) {
       return {
@@ -38,12 +47,15 @@ export async function deleteImage(
 
     if (!response.ok) {
       const errorText = await response.text()
-      console.error('Delete image API error:', response.status, errorText)
+      console.error('[deleteImage] API error:', response.status, errorText)
       return {
         success: false,
         error: CLOTHES_ERRORS.UNKNOWN
       }
     }
+
+    const data = await response.json()
+    console.log('[deleteImage] Success response:', data)
 
     revalidatePath('/admin/clothes')
     revalidatePath(`/admin/clothes/${clothesId}/edit`)

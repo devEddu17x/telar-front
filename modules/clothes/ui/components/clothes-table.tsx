@@ -5,6 +5,7 @@ import Link from 'next/link'
 
 import {
   Edit,
+  Eye,
   ImageOff,
   MoreHorizontal,
   PackageSearch,
@@ -33,11 +34,15 @@ import type { Clothes } from '../../types'
 interface ClothesTableProps {
   clothes: Clothes[]
   hasFilters?: boolean
+  basePath?: string
+  canEdit?: boolean
 }
 
 export function ClothesTable({
   clothes,
-  hasFilters = false
+  hasFilters = false,
+  basePath = '/admin/clothes',
+  canEdit = true
 }: ClothesTableProps) {
   function formatPrice(price: number | string) {
     return `S/ ${Number(price).toFixed(2)}`
@@ -65,9 +70,11 @@ export function ClothesTable({
             <p className='text-muted-foreground mt-1 text-sm'>
               Crea tu primera prenda para comenzar
             </p>
-            <Button asChild className='mt-4'>
-              <Link href='/admin/clothes/new'>Crear prenda</Link>
-            </Button>
+            {canEdit && (
+              <Button asChild className='mt-4'>
+                <Link href={`${basePath}/new`}>Crear prenda</Link>
+              </Button>
+            )}
           </>
         )}
       </div>
@@ -108,7 +115,14 @@ export function ClothesTable({
                     )}
                   </div>
                 </TableCell>
-                <TableCell className='font-medium'>{item.name}</TableCell>
+                <TableCell className='font-medium'>
+                  <Link
+                    href={`${basePath}/${item.id}`}
+                    className='hover:text-primary hover:underline'
+                  >
+                    {item.name}
+                  </Link>
+                </TableCell>
                 <TableCell>{formatPrice(item.price)}</TableCell>
                 <TableCell>
                   {item.isInEcommerce ? (
@@ -148,14 +162,19 @@ export function ClothesTable({
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align='end'>
                       <DropdownMenuItem asChild>
-                        <Link href={`/admin/clothes/${item.id}/edit`}>
-                          <Edit className='mr-2 h-4 w-4' />
-                          Editar
+                        <Link href={`${basePath}/${item.id}`}>
+                          <Eye className='mr-2 h-4 w-4' />
+                          Ver
                         </Link>
                       </DropdownMenuItem>
-                      <DropdownMenuItem className='text-destructive'>
-                        Eliminar
-                      </DropdownMenuItem>
+                      {canEdit && (
+                        <DropdownMenuItem asChild>
+                          <Link href={`${basePath}/${item.id}/edit`}>
+                            <Edit className='mr-2 h-4 w-4' />
+                            Editar
+                          </Link>
+                        </DropdownMenuItem>
+                      )}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>

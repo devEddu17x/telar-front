@@ -17,6 +17,7 @@ interface AddImagesInput {
 }
 
 interface AddImagesResponse {
+  imageUrls: string[]
   preSignedPuts: PreSignedPut[]
 }
 
@@ -28,6 +29,9 @@ export async function addImages(
   const accessToken = cookieStore.get(AUTH_COOKIES.ACCESS_TOKEN)?.value
   const antiCsrf = cookieStore.get(AUTH_COOKIES.ANTI_CSRF)?.value
 
+  console.log('[addImages] Starting add for:', { clothesId, images })
+  console.log('[addImages] API URL:', `${API_URL}/clothes/${clothesId}/images`)
+
   try {
     const response = await fetch(`${API_URL}/clothes/${clothesId}/images`, {
       method: 'POST',
@@ -36,8 +40,11 @@ export async function addImages(
         Cookie: `${AUTH_COOKIES.ACCESS_TOKEN}=${accessToken}`,
         'anti-csrf': antiCsrf || ''
       },
-      body: JSON.stringify({ images })
+      body: JSON.stringify({ images }),
+      credentials: 'include'
     })
+
+    console.log('[addImages] Response status:', response.status)
 
     if (response.status === 404) {
       return {
@@ -48,7 +55,7 @@ export async function addImages(
 
     if (!response.ok) {
       const errorText = await response.text()
-      console.error('Add images API error:', response.status, errorText)
+      console.error('[addImages] API error:', response.status, errorText)
       return {
         success: false,
         error: CLOTHES_ERRORS.UNKNOWN
@@ -56,6 +63,7 @@ export async function addImages(
     }
 
     const data: AddImagesResponse = await response.json()
+    console.log('[addImages] Success response:', data)
 
     revalidatePath('/admin/clothes')
     revalidatePath(`/admin/clothes/${clothesId}/edit`)

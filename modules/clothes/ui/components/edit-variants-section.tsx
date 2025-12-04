@@ -495,7 +495,7 @@ export function EditVariantsSection({
             <AlertDialogAction
               onClick={handleConfirmDelete}
               disabled={isPending}
-              className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
+              className='bg-destructive hover:bg-destructive/90 text-white'
             >
               {isPending ? <Spinner className='mr-2 h-4 w-4' /> : null}
               Eliminar

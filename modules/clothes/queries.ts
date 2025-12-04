@@ -22,6 +22,31 @@ export async function getClothesById(id: string): Promise<Clothes | null> {
   }
 }
 
+export async function getClothesWithVariants(): Promise<Clothes[]> {
+  try {
+    // Get all clothes
+    const clothesList = await fetchWithAuth<Clothes[]>('/clothes')
+
+    // For each clothes, get full details with variants
+    const clothesWithVariants = await Promise.all(
+      clothesList.map(async clothes => {
+        try {
+          const fullClothes = await fetchWithAuth<Clothes>(
+            `/clothes/${clothes.id}`
+          )
+          return fullClothes
+        } catch {
+          return clothes
+        }
+      })
+    )
+
+    return clothesWithVariants
+  } catch {
+    return []
+  }
+}
+
 export async function searchClothes(
   params: SearchClothesParams
 ): Promise<Clothes[]> {
