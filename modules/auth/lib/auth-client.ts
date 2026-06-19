@@ -54,6 +54,24 @@ function apiErrorMessage(error: unknown) {
   return AUTH_ERRORS.UNKNOWN
 }
 
+function getCognitoErrorMessage(error: unknown) {
+  if (error instanceof Error) {
+    return error.message
+  }
+
+  if (error && typeof error === 'object' && 'message' in error) {
+    const message = (error as { message?: unknown }).message
+
+    if (typeof message === 'string') return message
+  }
+
+  return ''
+}
+
+function isUserDisabledError(error: unknown) {
+  return getCognitoErrorMessage(error).toLowerCase().includes('user is disabled')
+}
+
 export async function signUpClient(
   input: SignUpInput
 ): Promise<ActionResponse<{ email: string }>> {
@@ -178,6 +196,10 @@ export async function signInClient(
     }
 
     if (error instanceof NotAuthorizedException) {
+      if (isUserDisabledError(error)) {
+        return { success: false, error: AUTH_ERRORS.USER_DISABLED }
+      }
+
       return { success: false, error: AUTH_ERRORS.INVALID_CREDENTIALS }
     }
 

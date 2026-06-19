@@ -1,10 +1,11 @@
 'use client'
 
-import { useActionState, useEffect } from 'react'
+import { useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { User } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 import type { ActionResponse } from '@/modules/auth/types'
 import { Button } from '@/components/ui/button'
@@ -18,7 +19,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 
-import { updateCurrentEmployee } from '../../actions/update-current-employee'
+import { updateCurrentEmployeeClient } from '../../lib/employees-client'
 import { updateEmployeeProfileSchema, type UpdateEmployeeProfileInput } from '../../schemas'
 import type { GetCurrentEmployeeResponse } from '../../types'
 
@@ -31,10 +32,9 @@ const initialState: ActionResponse<GetCurrentEmployeeResponse> = {
 }
 
 export function UpdateMyProfileForm({ currentEmployee }: UpdateMyProfileFormProps) {
-  const [state, formAction, isPending] = useActionState(
-    updateCurrentEmployee,
-    initialState
-  )
+  const router = useRouter()
+  const [state, setState] = useState(initialState)
+  const [isPending, setIsPending] = useState(false)
 
   const form = useForm<UpdateEmployeeProfileInput>({
     resolver: zodResolver(updateEmployeeProfileSchema),
@@ -44,22 +44,29 @@ export function UpdateMyProfileForm({ currentEmployee }: UpdateMyProfileFormProp
     }
   })
 
-  useEffect(() => {
-    if (state.success && state.data) {
+  async function handleSubmit(data: UpdateEmployeeProfileInput) {
+    setIsPending(true)
+    const result = await updateCurrentEmployeeClient(data)
+    setState(result)
+    setIsPending(false)
+
+    if (result.success && result.data) {
       toast.success('Perfil actualizado correctamente')
       form.reset({
-        names: state.data.names,
-        lastNames: state.data.lastNames
+        names: result.data.names,
+        lastNames: result.data.lastNames
       })
+      router.refresh()
     }
-    if (state.error) {
-      toast.error(state.error)
+
+    if (result.error) {
+      toast.error(result.error)
     }
-  }, [state.success, state.error, state.data, form])
+  }
 
   return (
     <Form {...form}>
-      <form action={formAction} className='space-y-5'>
+      <form onSubmit={form.handleSubmit(handleSubmit)} className='space-y-5'>
         <div className='grid gap-5 sm:grid-cols-2'>
           <FormField
             control={form.control}
