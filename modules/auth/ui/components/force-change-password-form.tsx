@@ -1,6 +1,6 @@
 'use client'
 
-import { useActionState, useEffect, useState, useTransition } from 'react'
+import { useState } from 'react'
 
 import { useRouter } from 'next/navigation'
 
@@ -9,7 +9,7 @@ import { CheckIcon, EyeIcon, EyeOffIcon, OctagonAlertIcon } from 'lucide-react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm } from 'react-hook-form'
 
-import { forceChangePassword } from '@/modules/auth/actions/force-change-password'
+import { forceChangePasswordClient } from '@/modules/auth/lib/auth-client'
 import { forceChangePasswordSchema, type ForceChangePasswordInput } from '@/modules/auth/schemas'
 import type { ActionResponse } from '@/modules/auth/types'
 
@@ -21,7 +21,8 @@ const initialState: ActionResponse<{ redirectTo: string }> = { success: false }
 
 export function ForceChangePasswordForm() {
   const router = useRouter()
-  const [state, formAction, isPending] = useActionState(forceChangePassword, initialState)
+  const [state, setState] = useState(initialState)
+  const [isPending, setIsPending] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [sessionError, setSessionError] = useState<string | null>(null)
 
@@ -32,7 +33,6 @@ export function ForceChangePasswordForm() {
     defaultValues: { password: '' }
   })
 
-  const [isTransitioning, startTransition] = useTransition()
   const newPassword = form.watch('password') || ''
 
   const reqs = {
@@ -43,13 +43,31 @@ export function ForceChangePasswordForm() {
     symbol: /[^A-Za-z0-9]/.test(newPassword)
   }
 
-  useEffect(() => {
-    if (state.success && state.data?.redirectTo) {
+  const handleSubmit = async (data: ForceChangePasswordInput) => {
+    const session = window.sessionStorage.getItem('auth.challengeSession')
+    const email = window.sessionStorage.getItem('auth.challengeEmail')
+
+    if (!session || !email) {
+      setSessionError('No se encontró la sesión activa. Por favor, intenta iniciar sesión nuevamente.')
+      return
+    }
+
+    setSessionError(null)
+    setIsPending(true)
+    const result = await forceChangePasswordClient({
+      ...data,
+      session,
+      email
+    })
+    setState(result)
+    setIsPending(false)
+
+    if (result.success && result.data?.redirectTo) {
       window.sessionStorage.removeItem('auth.challengeEmail')
       window.sessionStorage.removeItem('auth.challengeSession')
-      router.push(state.data.redirectTo)
+      router.push(result.data.redirectTo)
     }
-  }, [state, router])
+  }
 
   return (
     <div className='relative flex min-h-svh w-full items-center justify-center overflow-hidden bg-[#faf9f8] p-6'>
@@ -75,25 +93,7 @@ export function ForceChangePasswordForm() {
           <form
             id='force-change-password-form'
             className='space-y-6'
-            onSubmit={form.handleSubmit(data => {
-              const session = window.sessionStorage.getItem('auth.challengeSession')
-              const email = window.sessionStorage.getItem('auth.challengeEmail')
-
-              if (!session || !email) {
-                setSessionError('No se encontró la sesión activa. Por favor, intenta iniciar sesión nuevamente.')
-                return
-              }
-
-              setSessionError(null)
-
-              startTransition(() => {
-                const formData = new FormData()
-                formData.append('password', data.password)
-                formData.append('session', session)
-                formData.append('email', email)
-                formAction(formData)
-              })
-            })}
+            onSubmit={form.handleSubmit(handleSubmit)}
           >
             <Controller
               name='password'
@@ -159,10 +159,10 @@ export function ForceChangePasswordForm() {
             <Button
               type='submit'
               form='force-change-password-form'
-              disabled={isPending || isTransitioning}
+              disabled={isPending}
               className='h-12 w-full rounded-xl bg-[linear-gradient(45deg,#2b1608_0%,#5c4130_100%)] text-base font-bold text-white hover:opacity-95'
             >
-              {isPending || isTransitioning ? 'Actualizando...' : 'Actualizar contraseña'}
+              {isPending ? 'Actualizando...' : 'Actualizar contraseña'}
             </Button>
           </form>
 
