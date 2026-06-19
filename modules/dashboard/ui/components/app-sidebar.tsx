@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import {
   ChevronRight,
   ChevronsUpDown,
@@ -16,7 +16,7 @@ import {
   UserCircle
 } from 'lucide-react'
 
-import { signOut } from '@/modules/auth/actions/sign-out'
+import { signOutClient } from '@/modules/auth/lib/auth-client'
 import type { Role } from '@/modules/auth/types'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import {
@@ -150,6 +150,7 @@ const sellerNavGroups: NavGroup[] = [
 
 export function AppSidebar({ user }: AppSidebarProps) {
   const pathname = usePathname()
+  const router = useRouter()
   const isAdmin = user.roles.includes('owner') || user.roles.includes('admin')
   const navGroups = isAdmin ? adminNavGroups : sellerNavGroups
   const profileHref = isAdmin ? '/admin/profile' : '/seller/profile'
@@ -160,6 +161,11 @@ export function AppSidebar({ user }: AppSidebarProps) {
 
   function isGroupActive(group: NavGroup) {
     return group.items.some(item => pathname === item.href)
+  }
+
+  function handleSignOut() {
+    signOutClient()
+    router.push('/sign-in')
   }
 
   return (
@@ -268,15 +274,14 @@ export function AppSidebar({ user }: AppSidebarProps) {
 
             {/* Cerrar sesión */}
             <div className='p-1'>
-              <form action={signOut} className='w-full'>
-                <button
-                  type='submit'
-                  className='text-destructive hover:bg-destructive/10 flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors'
-                >
-                  <LogOut className='h-4 w-4' />
-                  <span>Cerrar sesión</span>
-                </button>
-              </form>
+              <button
+                type='button'
+                onClick={handleSignOut}
+                className='text-destructive hover:bg-destructive/10 flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors'
+              >
+                <LogOut className='h-4 w-4' />
+                <span>Cerrar sesión</span>
+              </button>
             </div>
           </PopoverContent>
         </Popover>
