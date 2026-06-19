@@ -28,9 +28,9 @@ function normalizeRoles(rawRoles: string[] = []): Role[] {
 }
 
 export async function signIn(
-  _prevState: ActionResponse<{ redirectTo: string }>,
+  _prevState: ActionResponse<{ redirectTo: string; session?: string; email?: string }>,
   formData: FormData
-): Promise<ActionResponse<{ redirectTo: string }>> {
+): Promise<ActionResponse<{ redirectTo: string; session?: string; email?: string }>> {
   const rawData = {
     email: formData.get('email'),
     password: formData.get('password')
@@ -65,7 +65,7 @@ export async function signIn(
           session: response.Session,
           email: email
         }
-      } as any
+      }
     }
 
     if (!response.AuthenticationResult?.IdToken) {
