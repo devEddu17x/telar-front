@@ -1,8 +1,9 @@
 'use client'
 
-import { useActionState, useEffect, useRef } from 'react'
+import { useState } from 'react'
 
 import { Pencil } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -32,7 +33,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 
-import { updateClient } from '../../actions/update-client'
+import { updateClientClient } from '../../lib/clients-client'
 import { updateClientSchema, type UpdateClientInput } from '../../schemas'
 import type { Client } from '../../types'
 
@@ -45,14 +46,10 @@ const initialState: ActionResponse<Client> = {
 }
 
 export function EditClientForm({ client }: EditClientFormProps) {
-  const closeButtonRef = useRef<HTMLButtonElement>(null)
-  const prevSuccessRef = useRef(false)
-
-  const [state, formAction, isPending] = useActionState(
-    (prevState: ActionResponse<Client>, formData: FormData) =>
-      updateClient(client.id, prevState, formData),
-    initialState
-  )
+  const router = useRouter()
+  const [open, setOpen] = useState(false)
+  const [state, setState] = useState(initialState)
+  const [isPending, setIsPending] = useState(false)
 
   const form = useForm<UpdateClientInput>({
     resolver: zodResolver(updateClientSchema),
@@ -62,16 +59,21 @@ export function EditClientForm({ client }: EditClientFormProps) {
     }
   })
 
-  useEffect(() => {
-    if (state.success && !prevSuccessRef.current) {
-      prevSuccessRef.current = true
+  async function handleSubmit(data: UpdateClientInput) {
+    setIsPending(true)
+    const result = await updateClientClient(client.id, data)
+    setState(result)
+    setIsPending(false)
+
+    if (result.success) {
       toast.success('Cliente actualizado exitosamente')
-      closeButtonRef.current?.click()
+      setOpen(false)
+      router.refresh()
     }
-  }, [state.success])
+  }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant='ghost' size='sm' className='w-full justify-start'>
           <Pencil className='mr-2 h-4 w-4' />
@@ -96,7 +98,10 @@ export function EditClientForm({ client }: EditClientFormProps) {
         </div>
 
         <Form {...form}>
-          <form action={formAction} className='space-y-4'>
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className='space-y-4'
+          >
             <FormField
               control={form.control}
               name='phone'
@@ -137,7 +142,7 @@ export function EditClientForm({ client }: EditClientFormProps) {
 
             <DialogFooter className='gap-2 sm:gap-0'>
               <DialogClose asChild>
-                <Button type='button' variant='outline' ref={closeButtonRef}>
+                <Button type='button' variant='outline'>
                   Cancelar
                 </Button>
               </DialogClose>

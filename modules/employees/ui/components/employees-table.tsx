@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
 
 import { Shield, UserRound } from 'lucide-react'
 import { useRouter } from 'next/navigation'
@@ -47,6 +47,7 @@ export function EmployeesTable({
   currentUserSub
 }: EmployeesTableProps) {
   const router = useRouter()
+  const [, startTransition] = useTransition()
   const [employeeToUpdate, setEmployeeToUpdate] = useState<{
     id: string
     name: string
@@ -66,24 +67,26 @@ export function EmployeesTable({
     if (!employeeToUpdate) return
 
     setIsUpdating(true)
-    const result = await updateEmployeeStatusClient({
-      employeeId: employeeToUpdate.id,
-      shouldActivate: !employeeToUpdate.isActive
-    })
-    setIsUpdating(false)
+    try {
+      const result = await updateEmployeeStatusClient({
+        employeeId: employeeToUpdate.id,
+        shouldActivate: !employeeToUpdate.isActive
+      })
 
-    if (result.success) {
-      toast.success(
-        employeeToUpdate.isActive
-          ? 'Empleado suspendido exitosamente'
-          : 'Empleado reactivado exitosamente'
-      )
-      router.refresh()
-    } else {
-      toast.error(result.error || 'No se pudo actualizar el estado del empleado')
+      if (result.success) {
+        toast.success(
+          employeeToUpdate.isActive
+            ? 'Empleado suspendido exitosamente'
+            : 'Empleado reactivado exitosamente'
+        )
+        startTransition(() => router.refresh())
+      } else {
+        toast.error(result.error || 'No se pudo actualizar el estado del empleado')
+      }
+    } finally {
+      setIsUpdating(false)
+      setEmployeeToUpdate(null)
     }
-
-    setEmployeeToUpdate(null)
   }
 
   function canManageEmployee(employee: Employee): boolean {
