@@ -1,9 +1,11 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL
+const DEFAULT_TIMEOUT_MS = 15000
 
 interface ApiRequestOptions extends Omit<RequestInit, 'body' | 'headers'> {
   body?: unknown
   headers?: Record<string, string>
   token?: string | null
+  timeoutMs?: number
 }
 
 export class ApiError extends Error {
@@ -60,16 +62,35 @@ export async function apiRequest<T>(
     headers.Authorization = `Bearer ${options.token}`
   }
 
-  const response = await fetch(`${API_URL}${endpoint}`, {
-    ...options,
-    headers,
-    body:
-      options.body instanceof FormData || typeof options.body === 'string'
-        ? options.body
-        : options.body !== undefined
-          ? JSON.stringify(options.body)
-          : undefined
-  })
+  const controller = new AbortController()
+  const timeout = window.setTimeout(
+    () => controller.abort(),
+    options.timeoutMs ?? DEFAULT_TIMEOUT_MS
+  )
+
+  let response: Response
+
+  try {
+    response = await fetch(`${API_URL}${endpoint}`, {
+      ...options,
+      signal: controller.signal,
+      headers,
+      body:
+        options.body instanceof FormData || typeof options.body === 'string'
+          ? options.body
+          : options.body !== undefined
+            ? JSON.stringify(options.body)
+            : undefined
+    })
+  } catch (error) {
+    if (error instanceof DOMException && error.name === 'AbortError') {
+      throw new ApiError(408, 'La solicitud tardó demasiado en responder', null)
+    }
+
+    throw error
+  } finally {
+    window.clearTimeout(timeout)
+  }
 
   const body = await parseResponseBody(response)
 
