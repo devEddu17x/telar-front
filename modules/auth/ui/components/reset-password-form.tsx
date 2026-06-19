@@ -1,6 +1,6 @@
 'use client'
 
-import { useActionState, useEffect, useState, useTransition } from 'react'
+import { useEffect, useState } from 'react'
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -10,7 +10,7 @@ import { EyeIcon, EyeOffIcon, KeyRoundIcon, OctagonAlertIcon } from 'lucide-reac
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm } from 'react-hook-form'
 
-import { resetPassword } from '@/modules/auth/actions/reset-password'
+import { resetPasswordClient } from '@/modules/auth/lib/auth-client'
 import { resetPasswordSchema, type ResetPasswordInput } from '@/modules/auth/schemas'
 import type { ActionResponse } from '@/modules/auth/types'
 
@@ -27,9 +27,9 @@ const initialState: ActionResponse<{ redirectTo: string }> = { success: false }
 
 export function ResetPasswordForm() {
   const router = useRouter()
-  const [state, formAction, isPending] = useActionState(resetPassword, initialState)
+  const [state, setState] = useState(initialState)
+  const [isPending, setIsPending] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
-  const [email, setEmail] = useState('')
 
   const form = useForm<ResetPasswordInput>({
     resolver: zodResolver(resetPasswordSchema),
@@ -39,24 +39,22 @@ export function ResetPasswordForm() {
   useEffect(() => {
     const savedEmail = window.sessionStorage.getItem('auth.resetPasswordEmail')
     if (savedEmail) {
-      setEmail(savedEmail)
       form.setValue('email', savedEmail)
     } else {
       router.push('/forgot-password')
     }
   }, [form, router])
 
-  const [isTransitioning, startTransition] = useTransition()
+  const handleSubmit = async (data: ResetPasswordInput) => {
+    setIsPending(true)
+    const result = await resetPasswordClient(data)
+    setState(result)
+    setIsPending(false)
 
-  useEffect(() => {
-    if (state.success && state.data?.redirectTo) {
+    if (result.success && result.data?.redirectTo) {
       window.sessionStorage.removeItem('auth.resetPasswordEmail')
-      router.push(state.data.redirectTo)
+      router.push(result.data.redirectTo)
     }
-  }, [state, router])
-
-  if (!email) {
-    return null
   }
 
   return (
@@ -81,15 +79,7 @@ export function ResetPasswordForm() {
           <form
             id='reset-password-form'
             className='space-y-6'
-            onSubmit={form.handleSubmit(data => {
-              startTransition(() => {
-                const formData = new FormData()
-                formData.append('email', data.email)
-                formData.append('code', data.code)
-                formData.append('password', data.password)
-                formAction(formData)
-              })
-            })}
+            onSubmit={form.handleSubmit(handleSubmit)}
           >
             <Controller
               name='code'
@@ -195,10 +185,10 @@ export function ResetPasswordForm() {
             <Button
               type='submit'
               form='reset-password-form'
-              disabled={isPending || isTransitioning}
+              disabled={isPending}
               className='h-12 w-full rounded-xl bg-[linear-gradient(45deg,#2b1608_0%,#5c4130_100%)] text-base font-bold text-white hover:opacity-95'
             >
-              {isPending || isTransitioning ? 'Guardando...' : 'Cambiar contraseña'}
+              {isPending ? 'Guardando...' : 'Cambiar contraseña'}
             </Button>
           </form>
 

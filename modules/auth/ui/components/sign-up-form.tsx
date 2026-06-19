@@ -11,9 +11,11 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { REGEXP_ONLY_DIGITS } from 'input-otp'
 import { Controller, useForm } from 'react-hook-form'
 
-import { confirmEmail } from '@/modules/auth/actions/confirm-email'
-import { resendCode } from '@/modules/auth/actions/resend-code'
-import { signUp } from '@/modules/auth/actions/sign-up'
+import {
+  confirmEmailClient,
+  resendCodeClient,
+  signUpClient
+} from '@/modules/auth/lib/auth-client'
 import {
   otpVerificationSchema,
   signUpSchema,
@@ -84,14 +86,7 @@ export function SignUpForm() {
     setErrorMessage(null)
     setSuccessMessage(null)
 
-    const formData = new FormData()
-    formData.append('firstName', data.firstName)
-    formData.append('lastName', data.lastName)
-    formData.append('email', data.email)
-    formData.append('password', data.password)
-    formData.append('acceptedTerms', String(data.acceptedTerms))
-
-    const result = await signUp({ success: false }, formData)
+    const result = await signUpClient(data)
 
     if (!result.success) {
       setErrorMessage(result.error || 'No se pudo crear la cuenta.')
@@ -114,11 +109,7 @@ export function SignUpForm() {
     setErrorMessage(null)
     setSuccessMessage(null)
 
-    const formData = new FormData()
-    formData.append('email', data.email)
-    formData.append('code', data.code)
-
-    const result = await confirmEmail({ success: false }, formData)
+    const result = await confirmEmailClient(data)
 
     if (!result.success) {
       setErrorMessage(result.error || 'No se pudo verificar el código.')
@@ -138,7 +129,7 @@ export function SignUpForm() {
     setErrorMessage(null)
     setSuccessMessage(null)
 
-    const result = await resendCode(pendingEmail)
+    const result = await resendCodeClient(pendingEmail)
 
     if (!result.success) {
       setErrorMessage(result.error || 'No se pudo reenviar el código.')

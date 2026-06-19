@@ -1,6 +1,6 @@
 'use client'
 
-import { useActionState, useEffect, useTransition } from 'react'
+import { useState } from 'react'
 
 import { useRouter } from 'next/navigation'
 
@@ -9,7 +9,7 @@ import { BuildingIcon, OctagonAlertIcon } from 'lucide-react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm } from 'react-hook-form'
 
-import { tenantSetup } from '@/modules/auth/actions/tenant-setup'
+import { tenantSetupClient } from '@/modules/auth/lib/auth-client'
 import { tenantSetupSchema, type TenantSetupInput } from '@/modules/auth/schemas'
 import type { ActionResponse } from '@/modules/auth/types'
 
@@ -21,19 +21,24 @@ const initialState: ActionResponse<{ redirectTo: string }> = { success: false }
 
 export function TenantSetupForm() {
   const router = useRouter()
-  const [state, formAction, isPending] = useActionState(tenantSetup, initialState)
-  const [isTransitioning, startTransition] = useTransition()
+  const [state, setState] = useState(initialState)
+  const [isPending, setIsPending] = useState(false)
 
   const form = useForm<TenantSetupInput>({
     resolver: zodResolver(tenantSetupSchema),
     defaultValues: { name: '', ruc: '', address: '' }
   })
 
-  useEffect(() => {
-    if (state.success && state.data?.redirectTo) {
-      router.push(state.data.redirectTo)
+  const handleSubmit = async (data: TenantSetupInput) => {
+    setIsPending(true)
+    const result = await tenantSetupClient(data)
+    setState(result)
+    setIsPending(false)
+
+    if (result.success && result.data?.redirectTo) {
+      router.push(result.data.redirectTo)
     }
-  }, [state, router])
+  }
 
   return (
     <div className='flex min-h-svh w-full flex-col bg-[#faf9f8] md:flex-row'>
@@ -78,15 +83,7 @@ export function TenantSetupForm() {
           <form
             id='tenant-setup-form'
             className='space-y-6'
-            onSubmit={form.handleSubmit(data => {
-              startTransition(() => {
-                const formData = new FormData()
-                formData.append('name', data.name)
-                if (data.ruc) formData.append('ruc', data.ruc)
-                if (data.address) formData.append('address', data.address)
-                formAction(formData)
-              })
-            })}
+            onSubmit={form.handleSubmit(handleSubmit)}
           >
             <div className='space-y-5'>
               <Controller
@@ -174,10 +171,10 @@ export function TenantSetupForm() {
             <Button
               type='submit'
               form='tenant-setup-form'
-              disabled={isPending || isTransitioning}
+              disabled={isPending}
               className='h-12 w-full rounded-xl bg-[linear-gradient(45deg,#2b1608_0%,#5c4130_100%)] text-lg font-bold text-white hover:opacity-95'
             >
-              {isPending || isTransitioning ? 'Guardando...' : 'Registrar empresa'}
+              {isPending ? 'Guardando...' : 'Registrar empresa'}
             </Button>
           </form>
         </div>
