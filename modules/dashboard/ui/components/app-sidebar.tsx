@@ -1,5 +1,7 @@
 'use client'
 
+import { useSyncExternalStore } from 'react'
+
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import {
@@ -149,6 +151,11 @@ const sellerNavGroups: NavGroup[] = [
 ]
 
 export function AppSidebar({ user }: AppSidebarProps) {
+  const isMounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  )
   const pathname = usePathname()
   const router = useRouter()
   const isAdmin = user.roles.includes('owner') || user.roles.includes('admin')
@@ -166,6 +173,10 @@ export function AppSidebar({ user }: AppSidebarProps) {
   function handleSignOut() {
     signOutClient()
     router.push('/sign-in')
+  }
+
+  if (!isMounted) {
+    return null
   }
 
   return (
