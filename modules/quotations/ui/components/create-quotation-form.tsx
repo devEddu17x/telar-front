@@ -12,7 +12,7 @@ import { toast } from 'sonner'
 
 import type { Client } from '@/modules/clients/types'
 import type { Clothes } from '@/modules/clothes/types'
-import { createQuotation } from '@/modules/quotations/actions/create-quotation'
+import { createQuotationClient } from '@/modules/quotations/lib/quotations-client'
 import {
   createQuotationSchema,
   type CreateQuotationInput
@@ -68,10 +68,11 @@ export function CreateQuotationForm({
 
   const onSubmit = (values: CreateQuotationInput) => {
     startTransition(async () => {
-      const result = await createQuotation(values)
+      const result = await createQuotationClient(values)
 
       if (result.success) {
         toast.success('Cotización creada exitosamente')
+        router.refresh()
         router.push(basePath)
       } else {
         toast.error(result.error || 'Error al crear la cotización')
