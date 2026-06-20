@@ -2,7 +2,7 @@
 
 import { ApiError, apiRequest } from '@/lib/api/client'
 
-import { getClientIdToken } from '@/modules/auth/lib/session-client'
+import { getFreshClientIdToken } from '@/modules/auth/lib/session-client'
 import type { ActionResponse } from '@/modules/auth/types'
 
 import { QUOTATION_ERRORS } from '../constants'
@@ -24,8 +24,8 @@ interface CancelQuotationResponse {
   status: string
 }
 
-function getAuthenticatedTokenResponse() {
-  const idToken = getClientIdToken()
+async function getAuthenticatedTokenResponse() {
+  const idToken = await getFreshClientIdToken()
 
   if (!idToken) {
     return { success: false, error: 'No session' } as const
@@ -52,7 +52,7 @@ function getQuotationErrorMessage(error: unknown) {
 export async function getQuotationsClient(params?: {
   status?: QuotationStatus
 }): Promise<ActionResponse<Quotation[]>> {
-  const auth = getAuthenticatedTokenResponse()
+  const auth = await getAuthenticatedTokenResponse()
 
   if (!auth.success) {
     return { success: false, error: auth.error }
@@ -79,7 +79,7 @@ export async function getQuotationsClient(params?: {
 export async function getQuotationByIdClient(
   id: string
 ): Promise<ActionResponse<QuotationWithDetails>> {
-  const auth = getAuthenticatedTokenResponse()
+  const auth = await getAuthenticatedTokenResponse()
 
   if (!auth.success) {
     return { success: false, error: auth.error }
@@ -110,7 +110,7 @@ export async function createQuotationClient(
     }
   }
 
-  const auth = getAuthenticatedTokenResponse()
+  const auth = await getAuthenticatedTokenResponse()
 
   if (!auth.success) {
     return { success: false, error: auth.error }
@@ -143,7 +143,7 @@ export async function updateQuotationClient(
     }
   }
 
-  const auth = getAuthenticatedTokenResponse()
+  const auth = await getAuthenticatedTokenResponse()
 
   if (!auth.success) {
     return { success: false, error: auth.error }
@@ -166,7 +166,7 @@ export async function updateQuotationClient(
 export async function cancelQuotationClient(
   id: string
 ): Promise<ActionResponse<CancelQuotationResponse | QuotationWithDetails>> {
-  const auth = getAuthenticatedTokenResponse()
+  const auth = await getAuthenticatedTokenResponse()
 
   if (!auth.success) {
     return { success: false, error: auth.error }
