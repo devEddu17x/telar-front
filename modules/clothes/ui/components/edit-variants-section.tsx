@@ -10,9 +10,11 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
-import { addVariant } from '@/modules/clothes/actions/add-variant'
-import { deleteVariant } from '@/modules/clothes/actions/delete-variant'
-import { updateVariant } from '@/modules/clothes/actions/update-variant'
+import {
+  addVariantClient,
+  deleteVariantClient,
+  updateVariantClient
+} from '@/modules/clothes/lib/clothes-client'
 import {
   addVariantSchema,
   type AddVariantInput
@@ -122,7 +124,7 @@ export function EditVariantsSection({
 
   function handleSaveEdit(variantId: string) {
     startTransition(async () => {
-      const result = await updateVariant(clothesId, variantId, {
+      const result = await updateVariantClient(clothesId, variantId, {
         additional: parseFloat(editValue) || 0
       })
 
@@ -145,7 +147,7 @@ export function EditVariantsSection({
     if (!variantToDelete) return
 
     startTransition(async () => {
-      const result = await deleteVariant(clothesId, variantToDelete.id)
+      const result = await deleteVariantClient(clothesId, variantToDelete.id)
 
       if (result.success) {
         toast.success('Variante eliminada')
@@ -174,7 +176,7 @@ export function EditVariantsSection({
     }
 
     startTransition(async () => {
-      const result = await addVariant(clothesId, values)
+      const result = await addVariantClient(clothesId, values)
 
       if (result.success) {
         toast.success('Variante agregada')

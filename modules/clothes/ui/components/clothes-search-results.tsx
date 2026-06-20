@@ -36,7 +36,6 @@ async function ClothesSearchResultsContent({
 
   if (q) {
     params.name = q
-    params.description = q
   }
   if (size) params.size = size
   if (gender) params.gender = gender

@@ -11,8 +11,11 @@ import { toast } from 'sonner'
 
 import { cn } from '@/lib/utils'
 
-import { addImages } from '@/modules/clothes/actions/add-images'
-import { deleteImage } from '@/modules/clothes/actions/delete-image'
+import {
+  addImagesClient,
+  deleteImageClient,
+  uploadPreSignedImages
+} from '@/modules/clothes/lib/clothes-client'
 import type { ClothesImage } from '@/modules/clothes/types'
 
 import {
@@ -147,7 +150,7 @@ export function EditImagesSection({
     if (!imageToDelete) return
 
     startTransition(async () => {
-      const result = await deleteImage(clothesId, imageToDelete)
+      const result = await deleteImageClient(clothesId, imageToDelete)
 
       if (result.success) {
         toast.success('Imagen eliminada')
@@ -170,28 +173,14 @@ export function EditImagesSection({
         contentType: img.file.type
       }))
 
-      const result = await addImages(clothesId, imagesData)
+      const result = await addImagesClient(clothesId, imagesData)
 
       if (result.success && result.data?.preSignedPuts) {
         try {
-          const uploadPromises = result.data.preSignedPuts.map(
-            async (preSignedPut, index) => {
-              const file = newImages[index]?.file
-              if (!file) return
-
-              const response = await fetch(preSignedPut.putUrl, {
-                method: 'PUT',
-                body: file,
-                headers: preSignedPut.requiredHeaders
-              })
-
-              if (!response.ok) {
-                throw new Error(`Failed to upload image ${index + 1}`)
-              }
-            }
+          await uploadPreSignedImages(
+            result.data.preSignedPuts,
+            newImages.map(image => image.file)
           )
-
-          await Promise.all(uploadPromises)
 
           newImages.forEach(img => URL.revokeObjectURL(img.preview))
           setNewImages([])
