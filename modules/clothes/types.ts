@@ -33,7 +33,7 @@ export interface ClothesImage {
 export interface Clothes {
   id: string
   name: string
-  description: string
+  description: string | null
   price: string
   isInEcommerce: boolean
   isDraft: boolean
