@@ -2,7 +2,7 @@
 
 import { ApiError, apiRequest } from '@/lib/api/client'
 
-import { getClientIdToken } from '@/modules/auth/lib/session-client'
+import { getFreshClientIdToken } from '@/modules/auth/lib/session-client'
 import type { ActionResponse } from '@/modules/auth/types'
 
 import { CLIENT_ERRORS } from '../constants'
@@ -14,8 +14,8 @@ import {
 } from '../schemas'
 import type { Client, CreateClientResponse } from '../types'
 
-function getAuthenticatedTokenResponse() {
-  const idToken = getClientIdToken()
+async function getAuthenticatedTokenResponse() {
+  const idToken = await getFreshClientIdToken()
 
   if (!idToken) {
     return { success: false, error: 'No session' } as const
@@ -49,7 +49,7 @@ export async function createClientClient(
     }
   }
 
-  const auth = getAuthenticatedTokenResponse()
+  const auth = await getAuthenticatedTokenResponse()
 
   if (!auth.success) {
     return { success: false, error: auth.error }
@@ -80,7 +80,7 @@ export async function createClientClient(
 }
 
 export async function getClientsClient(): Promise<ActionResponse<Client[]>> {
-  const auth = getAuthenticatedTokenResponse()
+  const auth = await getAuthenticatedTokenResponse()
 
   if (!auth.success) {
     return { success: false, error: auth.error }
@@ -112,7 +112,7 @@ export async function searchClientsClient(params: {
   lastnames?: string
   phone?: string
 }): Promise<ActionResponse<Client[]>> {
-  const auth = getAuthenticatedTokenResponse()
+  const auth = await getAuthenticatedTokenResponse()
 
   if (!auth.success) {
     return { success: false, error: auth.error }
@@ -156,7 +156,7 @@ export async function updateClientClient(
     }
   }
 
-  const auth = getAuthenticatedTokenResponse()
+  const auth = await getAuthenticatedTokenResponse()
 
   if (!auth.success) {
     return { success: false, error: auth.error }
