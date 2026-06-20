@@ -3,7 +3,7 @@
 import { ApiError, apiRequest } from '@/lib/api/client'
 
 import {
-  getClientIdToken,
+  getFreshClientIdToken,
   normalizeRoles
 } from '@/modules/auth/lib/session-client'
 import type { ActionResponse } from '@/modules/auth/types'
@@ -73,8 +73,8 @@ function getEmployeeStatusErrorMessage(error: unknown) {
   return backendMessage || EMPLOYEE_ERRORS.UNKNOWN
 }
 
-function getAuthenticatedTokenResponse() {
-  const idToken = getClientIdToken()
+async function getAuthenticatedTokenResponse() {
+  const idToken = await getFreshClientIdToken()
 
   if (!idToken) {
     return { success: false, error: 'No session' } as const
@@ -96,7 +96,7 @@ export async function createEmployeeClient(
     }
   }
 
-  const auth = getAuthenticatedTokenResponse()
+  const auth = await getAuthenticatedTokenResponse()
 
   if (!auth.success) {
     return { success: false, error: auth.error }
@@ -122,7 +122,7 @@ export async function createEmployeeClient(
 export async function getEmployeesClient(): Promise<
   ActionResponse<Employee[]>
 > {
-  const auth = getAuthenticatedTokenResponse()
+  const auth = await getAuthenticatedTokenResponse()
 
   if (!auth.success) {
     return { success: false, error: auth.error }
@@ -153,7 +153,7 @@ export async function getEmployeesClient(): Promise<
 export async function getCurrentEmployeeClient(): Promise<
   ActionResponse<GetCurrentEmployeeResponse>
 > {
-  const auth = getAuthenticatedTokenResponse()
+  const auth = await getAuthenticatedTokenResponse()
 
   if (!auth.success) {
     return { success: false, error: auth.error }
@@ -194,7 +194,7 @@ export async function updateCurrentEmployeeClient(
     }
   }
 
-  const auth = getAuthenticatedTokenResponse()
+  const auth = await getAuthenticatedTokenResponse()
 
   if (!auth.success) {
     return { success: false, error: auth.error }
@@ -224,7 +224,7 @@ export async function updateEmployeeStatusClient({
   employeeId,
   shouldActivate
 }: UpdateEmployeeStatusInput): Promise<ActionResponse> {
-  const auth = getAuthenticatedTokenResponse()
+  const auth = await getAuthenticatedTokenResponse()
 
   if (!auth.success) {
     return { success: false, error: auth.error }

@@ -35,9 +35,10 @@ import {
 import type { ActionResponse } from '../types'
 import {
   clearClientSession,
-  getClientIdToken,
   getClientRefreshToken,
+  getFreshClientIdToken,
   getRedirectPathFromToken,
+  refreshClientSession,
   saveClientSession
 } from './session-client'
 
@@ -69,7 +70,9 @@ function getCognitoErrorMessage(error: unknown) {
 }
 
 function isUserDisabledError(error: unknown) {
-  return getCognitoErrorMessage(error).toLowerCase().includes('user is disabled')
+  return getCognitoErrorMessage(error)
+    .toLowerCase()
+    .includes('user is disabled')
 }
 
 export async function signUpClient(
@@ -144,7 +147,9 @@ export async function resendCodeClient(email: string): Promise<ActionResponse> {
 
 export async function signInClient(
   input: SignInInput
-): Promise<ActionResponse<{ redirectTo: string; session?: string; email?: string }>> {
+): Promise<
+  ActionResponse<{ redirectTo: string; session?: string; email?: string }>
+> {
   const validated = signInSchema.safeParse(input)
 
   if (!validated.success) {
@@ -187,7 +192,10 @@ export async function signInClient(
       refreshToken: response.AuthenticationResult?.RefreshToken
     })
 
-    return { success: true, data: { redirectTo: getRedirectPathFromToken(idToken) } }
+    return {
+      success: true,
+      data: { redirectTo: getRedirectPathFromToken(idToken) }
+    }
   } catch (error) {
     console.error('Sign in error:', error)
 
@@ -299,7 +307,10 @@ export async function forceChangePasswordClient(
       refreshToken: response.AuthenticationResult?.RefreshToken
     })
 
-    return { success: true, data: { redirectTo: getRedirectPathFromToken(idToken) } }
+    return {
+      success: true,
+      data: { redirectTo: getRedirectPathFromToken(idToken) }
+    }
   } catch (error) {
     console.error('Force change password error:', error)
 
@@ -320,7 +331,7 @@ export async function tenantSetupClient(
     return { success: false, error: firstValidationError(validated.error) }
   }
 
-  const idToken = getClientIdToken()
+  const idToken = await getFreshClientIdToken()
   const refreshToken = getClientRefreshToken()
 
   if (!idToken) {
@@ -336,20 +347,9 @@ export async function tenantSetupClient(
 
     if (refreshToken) {
       try {
-        const response = await cognitoClient.send(
-          new InitiateAuthCommand({
-            AuthFlow: AuthFlowType.REFRESH_TOKEN_AUTH,
-            ClientId: COGNITO.CLIENT_ID,
-            AuthParameters: {
-              REFRESH_TOKEN: refreshToken
-            }
-          })
-        )
-
-        const newIdToken = response.AuthenticationResult?.IdToken
+        const newIdToken = await refreshClientSession()
 
         if (newIdToken) {
-          saveClientSession({ idToken: newIdToken, refreshToken })
           return {
             success: true,
             data: { redirectTo: getRedirectPathFromToken(newIdToken) }

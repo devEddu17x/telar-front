@@ -2,7 +2,7 @@
 
 import { ApiError, apiRequest } from '@/lib/api/client'
 
-import { getClientIdToken } from '@/modules/auth/lib/session-client'
+import { getFreshClientIdToken } from '@/modules/auth/lib/session-client'
 import type { ActionResponse } from '@/modules/auth/types'
 
 import { CLOTHES_ERRORS } from '../constants'
@@ -59,8 +59,8 @@ interface UpdateVariantResponse {
   additional: string
 }
 
-function getAuthenticatedTokenResponse() {
-  const idToken = getClientIdToken()
+async function getAuthenticatedTokenResponse() {
+  const idToken = await getFreshClientIdToken()
 
   if (!idToken) {
     return { success: false, error: 'No session' } as const
@@ -97,7 +97,7 @@ export async function createClothesClient(
     return { success: false, error: CLOTHES_ERRORS.DUPLICATE_VARIANT }
   }
 
-  const auth = getAuthenticatedTokenResponse()
+  const auth = await getAuthenticatedTokenResponse()
 
   if (!auth.success) {
     return { success: false, error: auth.error }
@@ -120,7 +120,7 @@ export async function createClothesClient(
 export async function quickCreateClothesClient(
   data: QuickCreateClothesData
 ): Promise<ActionResponse<CreateClothesResponse>> {
-  const auth = getAuthenticatedTokenResponse()
+  const auth = await getAuthenticatedTokenResponse()
 
   if (!auth.success) {
     return { success: false, error: auth.error }
@@ -144,7 +144,7 @@ export async function quickCreateClothesClient(
 }
 
 export async function getClothesClient(): Promise<ActionResponse<Clothes[]>> {
-  const auth = getAuthenticatedTokenResponse()
+  const auth = await getAuthenticatedTokenResponse()
 
   if (!auth.success) {
     return { success: false, error: auth.error }
@@ -166,7 +166,7 @@ export async function getClothesClient(): Promise<ActionResponse<Clothes[]>> {
 export async function getClothesByIdClient(
   id: string
 ): Promise<ActionResponse<Clothes>> {
-  const auth = getAuthenticatedTokenResponse()
+  const auth = await getAuthenticatedTokenResponse()
 
   if (!auth.success) {
     return { success: false, error: auth.error }
@@ -208,7 +208,7 @@ export async function getClothesWithVariantsClient(): Promise<
 export async function searchClothesClient(
   params: SearchClothesParams
 ): Promise<ActionResponse<Clothes[]>> {
-  const auth = getAuthenticatedTokenResponse()
+  const auth = await getAuthenticatedTokenResponse()
 
   if (!auth.success) {
     return { success: false, error: auth.error }
@@ -253,7 +253,7 @@ export async function updateClothesClient(
     }
   }
 
-  const auth = getAuthenticatedTokenResponse()
+  const auth = await getAuthenticatedTokenResponse()
 
   if (!auth.success) {
     return { success: false, error: auth.error }
@@ -286,7 +286,7 @@ export async function addVariantClient(
     }
   }
 
-  const auth = getAuthenticatedTokenResponse()
+  const auth = await getAuthenticatedTokenResponse()
 
   if (!auth.success) {
     return { success: false, error: auth.error }
@@ -328,7 +328,7 @@ export async function updateVariantClient(
     }
   }
 
-  const auth = getAuthenticatedTokenResponse()
+  const auth = await getAuthenticatedTokenResponse()
 
   if (!auth.success) {
     return { success: false, error: auth.error }
@@ -355,7 +355,7 @@ export async function deleteVariantClient(
   clothesId: string,
   variantId: string
 ): Promise<ActionResponse<null>> {
-  const auth = getAuthenticatedTokenResponse()
+  const auth = await getAuthenticatedTokenResponse()
 
   if (!auth.success) {
     return { success: false, error: auth.error }
@@ -378,7 +378,7 @@ export async function addImagesClient(
   clothesId: string,
   images: CreateClothesImageInput[]
 ): Promise<ActionResponse<AddImagesResponse>> {
-  const auth = getAuthenticatedTokenResponse()
+  const auth = await getAuthenticatedTokenResponse()
 
   if (!auth.success) {
     return { success: false, error: auth.error }
@@ -416,7 +416,7 @@ export async function deleteImageClient(
     }
   }
 
-  const auth = getAuthenticatedTokenResponse()
+  const auth = await getAuthenticatedTokenResponse()
 
   if (!auth.success) {
     return { success: false, error: auth.error }

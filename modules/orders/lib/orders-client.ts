@@ -2,7 +2,7 @@
 
 import { ApiError, apiRequest } from '@/lib/api/client'
 
-import { getClientIdToken } from '@/modules/auth/lib/session-client'
+import { getFreshClientIdToken } from '@/modules/auth/lib/session-client'
 import type { ActionResponse } from '@/modules/auth/types'
 
 import { cancelOrderSchema } from '../schemas'
@@ -13,8 +13,8 @@ import type {
   OrderWithDetails
 } from '../types'
 
-function getAuthenticatedTokenResponse() {
-  const idToken = getClientIdToken()
+async function getAuthenticatedTokenResponse() {
+  const idToken = await getFreshClientIdToken()
 
   if (!idToken) {
     return { success: false, error: 'No session' } as const
@@ -34,7 +34,7 @@ function getOrderErrorMessage(error: unknown, fallback: string) {
 export async function getOrdersClient(params?: {
   status?: OrderStatus
 }): Promise<ActionResponse<Order[]>> {
-  const auth = getAuthenticatedTokenResponse()
+  const auth = await getAuthenticatedTokenResponse()
 
   if (!auth.success) {
     return { success: false, error: auth.error }
@@ -67,7 +67,7 @@ export async function getOrdersClient(params?: {
 export async function getOrderByIdClient(
   id: string
 ): Promise<ActionResponse<OrderWithDetails>> {
-  const auth = getAuthenticatedTokenResponse()
+  const auth = await getAuthenticatedTokenResponse()
 
   if (!auth.success) {
     return { success: false, error: auth.error }
@@ -92,7 +92,7 @@ export async function getOrderByIdClient(
 export async function createOrderClient(
   input: CreateOrderInput
 ): Promise<ActionResponse<Order>> {
-  const auth = getAuthenticatedTokenResponse()
+  const auth = await getAuthenticatedTokenResponse()
 
   if (!auth.success) {
     return { success: false, error: auth.error }
@@ -127,7 +127,7 @@ export async function updateOrderStatusClient(
   id: string,
   status: OrderStatus
 ): Promise<ActionResponse<Order>> {
-  const auth = getAuthenticatedTokenResponse()
+  const auth = await getAuthenticatedTokenResponse()
 
   if (!auth.success) {
     return { success: false, error: auth.error }
@@ -166,7 +166,7 @@ export async function cancelOrderClient(
     }
   }
 
-  const auth = getAuthenticatedTokenResponse()
+  const auth = await getAuthenticatedTokenResponse()
 
   if (!auth.success) {
     return { success: false, error: auth.error }
