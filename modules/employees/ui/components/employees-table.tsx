@@ -2,8 +2,9 @@
 
 import { useState, useTransition } from 'react'
 
-import { Shield, UserRound } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+
+import { Shield, UserRound } from 'lucide-react'
 
 import { toast } from 'sonner'
 
@@ -38,13 +39,15 @@ interface EmployeesTableProps {
   currentUserRoles: Role[]
   currentUserEmail: string
   currentUserSub: string
+  onStatusUpdated?: () => void
 }
 
 export function EmployeesTable({
   employees,
   currentUserRoles,
   currentUserEmail,
-  currentUserSub
+  currentUserSub,
+  onStatusUpdated
 }: EmployeesTableProps) {
   const router = useRouter()
   const [, startTransition] = useTransition()
@@ -79,9 +82,12 @@ export function EmployeesTable({
             ? 'Empleado suspendido exitosamente'
             : 'Empleado reactivado exitosamente'
         )
+        onStatusUpdated?.()
         startTransition(() => router.refresh())
       } else {
-        toast.error(result.error || 'No se pudo actualizar el estado del empleado')
+        toast.error(
+          result.error || 'No se pudo actualizar el estado del empleado'
+        )
       }
     } finally {
       setIsUpdating(false)
@@ -167,7 +173,9 @@ export function EmployeesTable({
                 </div>
               </TableCell>
               <TableCell>
-                <Badge variant={employee.isActive ? 'secondary' : 'destructive'}>
+                <Badge
+                  variant={employee.isActive ? 'secondary' : 'destructive'}
+                >
                   {employee.isActive ? 'Activo' : 'Suspendido'}
                 </Badge>
               </TableCell>

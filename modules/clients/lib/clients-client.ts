@@ -1,6 +1,7 @@
 'use client'
 
 import { ApiError, apiRequest } from '@/lib/api/client'
+
 import { getClientIdToken } from '@/modules/auth/lib/session-client'
 import type { ActionResponse } from '@/modules/auth/types'
 
@@ -71,6 +72,69 @@ export async function createClientClient(
     return { success: true, data }
   } catch (error) {
     console.error('Create client error:', error)
+    return {
+      success: false,
+      error: getClientErrorMessage(error)
+    }
+  }
+}
+
+export async function getClientsClient(): Promise<ActionResponse<Client[]>> {
+  const auth = getAuthenticatedTokenResponse()
+
+  if (!auth.success) {
+    return { success: false, error: auth.error }
+  }
+
+  try {
+    const data = await apiRequest<Client[]>('/customers', {
+      method: 'GET',
+      token: auth.idToken
+    })
+
+    return { success: true, data }
+  } catch (error) {
+    console.error('Get clients error:', error)
+
+    if (error instanceof ApiError && error.status === 404) {
+      return { success: true, data: [] }
+    }
+
+    return {
+      success: false,
+      error: getClientErrorMessage(error)
+    }
+  }
+}
+
+export async function searchClientsClient(params: {
+  names?: string
+  lastnames?: string
+  phone?: string
+}): Promise<ActionResponse<Client[]>> {
+  const auth = getAuthenticatedTokenResponse()
+
+  if (!auth.success) {
+    return { success: false, error: auth.error }
+  }
+
+  const query = new URLSearchParams()
+  if (params.names) query.set('names', params.names)
+  if (params.lastnames) query.set('lastnames', params.lastnames)
+  if (params.phone) query.set('phone', params.phone)
+
+  try {
+    const data = await apiRequest<Client[]>(
+      `/customers/search?${query.toString()}`,
+      {
+        method: 'GET',
+        token: auth.idToken
+      }
+    )
+
+    return { success: true, data }
+  } catch (error) {
+    console.error('Search clients error:', error)
     return {
       success: false,
       error: getClientErrorMessage(error)

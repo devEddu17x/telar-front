@@ -1,6 +1,7 @@
 'use client'
 
 import { ApiError, apiRequest } from '@/lib/api/client'
+
 import { getClientIdToken } from '@/modules/auth/lib/session-client'
 import type { ActionResponse } from '@/modules/auth/types'
 
@@ -22,7 +23,8 @@ import type {
   CreateClothesImageInput,
   CreateClothesResponse,
   CreateClothesVariantInput,
-  PreSignedPut
+  PreSignedPut,
+  SearchClothesParams
 } from '../types'
 
 interface CreateClothesData {
@@ -82,7 +84,9 @@ function getClothesErrorMessage(error: unknown) {
 }
 
 function hasDuplicateVariants(variants: CreateClothesVariantInput[]) {
-  const combinations = variants.map(variant => `${variant.size}-${variant.gender}`)
+  const combinations = variants.map(
+    variant => `${variant.size}-${variant.gender}`
+  )
   return combinations.length !== new Set(combinations).size
 }
 
@@ -123,15 +127,115 @@ export async function quickCreateClothesClient(
   }
 
   try {
-    const clothes = await apiRequest<CreateClothesResponse>('/clothes/quick-create', {
-      method: 'POST',
-      token: auth.idToken,
-      body: data
-    })
+    const clothes = await apiRequest<CreateClothesResponse>(
+      '/clothes/quick-create',
+      {
+        method: 'POST',
+        token: auth.idToken,
+        body: data
+      }
+    )
 
     return { success: true, data: clothes }
   } catch (error) {
     console.error('Quick create clothes error:', error)
+    return { success: false, error: getClothesErrorMessage(error) }
+  }
+}
+
+export async function getClothesClient(): Promise<ActionResponse<Clothes[]>> {
+  const auth = getAuthenticatedTokenResponse()
+
+  if (!auth.success) {
+    return { success: false, error: auth.error }
+  }
+
+  try {
+    const clothes = await apiRequest<Clothes[]>('/clothes', {
+      method: 'GET',
+      token: auth.idToken
+    })
+
+    return { success: true, data: clothes }
+  } catch (error) {
+    console.error('Get clothes error:', error)
+    return { success: false, error: getClothesErrorMessage(error) }
+  }
+}
+
+export async function getClothesByIdClient(
+  id: string
+): Promise<ActionResponse<Clothes>> {
+  const auth = getAuthenticatedTokenResponse()
+
+  if (!auth.success) {
+    return { success: false, error: auth.error }
+  }
+
+  try {
+    const clothes = await apiRequest<Clothes>(`/clothes/${id}`, {
+      method: 'GET',
+      token: auth.idToken
+    })
+
+    return { success: true, data: clothes }
+  } catch (error) {
+    console.error('Get clothes by id error:', error)
+    return { success: false, error: getClothesErrorMessage(error) }
+  }
+}
+
+export async function getClothesWithVariantsClient(): Promise<
+  ActionResponse<Clothes[]>
+> {
+  const listResult = await getClothesClient()
+
+  if (!listResult.success) {
+    return listResult
+  }
+
+  const clothesList = listResult.data ?? []
+  const detailResults = await Promise.all(
+    clothesList.map(async clothes => {
+      const result = await getClothesByIdClient(clothes.id)
+      return result.success && result.data ? result.data : clothes
+    })
+  )
+
+  return { success: true, data: detailResults }
+}
+
+export async function searchClothesClient(
+  params: SearchClothesParams
+): Promise<ActionResponse<Clothes[]>> {
+  const auth = getAuthenticatedTokenResponse()
+
+  if (!auth.success) {
+    return { success: false, error: auth.error }
+  }
+
+  const searchParams = new URLSearchParams()
+  if (params.name) searchParams.set('name', params.name)
+  if (params.description) searchParams.set('description', params.description)
+  if (params.size) searchParams.set('size', params.size)
+  if (params.gender) searchParams.set('gender', params.gender.toLowerCase())
+  if (params.isDraft !== undefined)
+    searchParams.set('isDraft', String(params.isDraft))
+  if (params.isInEcommerce !== undefined)
+    searchParams.set('isInEcommerce', String(params.isInEcommerce))
+
+  const queryString = searchParams.toString()
+  const endpoint = queryString ? `/clothes/search?${queryString}` : '/clothes'
+
+  try {
+    const clothes = await apiRequest<Clothes[]>(endpoint, {
+      method: 'GET',
+      token: auth.idToken
+    })
+
+    return { success: true, data: clothes }
+  } catch (error) {
+    console.error('Search clothes error:', error)
     return { success: false, error: getClothesErrorMessage(error) }
   }
 }
@@ -301,7 +405,9 @@ export async function deleteImageClient(
   clothesId: string,
   url: string
 ): Promise<ActionResponse<null>> {
-  const validated = deleteImageSchema.safeParse({ url } satisfies DeleteImageInput)
+  const validated = deleteImageSchema.safeParse({
+    url
+  } satisfies DeleteImageInput)
 
   if (!validated.success) {
     return {

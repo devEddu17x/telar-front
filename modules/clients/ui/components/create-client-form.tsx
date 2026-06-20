@@ -1,13 +1,17 @@
 'use client'
 
 import { useState } from 'react'
-import { Plus } from 'lucide-react'
+
 import { useRouter } from 'next/navigation'
+
+import { Plus } from 'lucide-react'
+
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
 import type { ActionResponse } from '@/modules/auth/types'
+
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -38,7 +42,11 @@ const initialState: ActionResponse<CreateClientResponse> = {
   success: false
 }
 
-export function CreateClientForm() {
+interface CreateClientFormProps {
+  onCreated?: () => void
+}
+
+export function CreateClientForm({ onCreated }: CreateClientFormProps) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [state, setState] = useState(initialState)
@@ -64,6 +72,7 @@ export function CreateClientForm() {
       toast.success('Cliente creado exitosamente')
       form.reset()
       setOpen(false)
+      onCreated?.()
       router.refresh()
     }
   }

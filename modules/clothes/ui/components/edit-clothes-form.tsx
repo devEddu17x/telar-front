@@ -42,9 +42,10 @@ import { Textarea } from '@/components/ui/textarea'
 
 interface EditClothesFormProps {
   clothes: Clothes
+  onUpdated?: () => void
 }
 
-export function EditClothesForm({ clothes }: EditClothesFormProps) {
+export function EditClothesForm({ clothes, onUpdated }: EditClothesFormProps) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const parsedPrice = Number(clothes.price) || 0
@@ -80,6 +81,7 @@ export function EditClothesForm({ clothes }: EditClothesFormProps) {
 
       if (result.success) {
         toast.success('Prenda actualizada exitosamente')
+        onUpdated?.()
         router.refresh()
       } else {
         toast.error(result.error || 'Error al actualizar la prenda')

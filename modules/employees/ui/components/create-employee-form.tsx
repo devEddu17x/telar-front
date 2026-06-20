@@ -2,8 +2,9 @@
 
 import { useState } from 'react'
 
-import { Plus } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+
+import { Plus } from 'lucide-react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -48,10 +49,12 @@ const initialState: ActionResponse<CreateEmployeeResponse> = {
 
 interface CreateEmployeeFormProps {
   canAssignAdminRole: boolean
+  onCreated?: () => void
 }
 
 export function CreateEmployeeForm({
-  canAssignAdminRole
+  canAssignAdminRole,
+  onCreated
 }: CreateEmployeeFormProps) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
@@ -78,6 +81,7 @@ export function CreateEmployeeForm({
       toast.success('Empleado creado exitosamente')
       form.reset()
       setOpen(false)
+      onCreated?.()
       router.refresh()
     }
   }
@@ -157,10 +161,7 @@ export function CreateEmployeeForm({
                 <FormItem>
                   <FormLabel>Rol</FormLabel>
                   <FormControl>
-                    <Select
-                      value={field.value}
-                      onValueChange={field.onChange}
-                    >
+                    <Select value={field.value} onValueChange={field.onChange}>
                       <SelectTrigger>
                         <SelectValue placeholder='Selecciona un rol' />
                       </SelectTrigger>

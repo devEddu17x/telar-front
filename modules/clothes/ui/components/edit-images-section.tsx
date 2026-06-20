@@ -44,6 +44,7 @@ import { ACCEPTED_IMAGE_TYPES, MAX_IMAGE_SIZE } from '../../constants'
 interface EditImagesSectionProps {
   clothesId: string
   images: ClothesImage[]
+  onChanged?: () => void
 }
 
 interface NewImage {
@@ -53,7 +54,8 @@ interface NewImage {
 
 export function EditImagesSection({
   clothesId,
-  images
+  images,
+  onChanged
 }: EditImagesSectionProps) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
@@ -154,6 +156,7 @@ export function EditImagesSection({
 
       if (result.success) {
         toast.success('Imagen eliminada')
+        onChanged?.()
         router.refresh()
       } else {
         toast.error(result.error || 'Error al eliminar imagen')
@@ -186,6 +189,7 @@ export function EditImagesSection({
           setNewImages([])
 
           toast.success('Imágenes subidas exitosamente')
+          onChanged?.()
           router.refresh()
         } catch (uploadError) {
           console.error('Error uploading images:', uploadError)

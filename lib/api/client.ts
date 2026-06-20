@@ -73,6 +73,7 @@ export async function apiRequest<T>(
   try {
     response = await fetch(`${API_URL}${endpoint}`, {
       ...options,
+      cache: options.cache ?? 'no-store',
       signal: controller.signal,
       headers,
       body:
