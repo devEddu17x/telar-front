@@ -12,7 +12,12 @@ import {
   type CreateQuotationInput,
   type UpdateQuotationInput
 } from '../schemas'
-import type { CreateQuotationResponse, QuotationWithDetails } from '../types'
+import type {
+  CreateQuotationResponse,
+  Quotation,
+  QuotationStatus,
+  QuotationWithDetails
+} from '../types'
 
 interface CancelQuotationResponse {
   id: string
@@ -42,6 +47,55 @@ function getQuotationErrorMessage(error: unknown) {
   }
 
   return error.message || QUOTATION_ERRORS.UNKNOWN
+}
+
+export async function getQuotationsClient(params?: {
+  status?: QuotationStatus
+}): Promise<ActionResponse<Quotation[]>> {
+  const auth = getAuthenticatedTokenResponse()
+
+  if (!auth.success) {
+    return { success: false, error: auth.error }
+  }
+
+  const searchParams = new URLSearchParams()
+  if (params?.status) searchParams.set('status', params.status)
+  const query = searchParams.toString()
+  const endpoint = query ? `/quotes?${query}` : '/quotes'
+
+  try {
+    const data = await apiRequest<Quotation[]>(endpoint, {
+      method: 'GET',
+      token: auth.idToken
+    })
+
+    return { success: true, data }
+  } catch (error) {
+    console.error('Get quotations error:', error)
+    return { success: false, error: getQuotationErrorMessage(error) }
+  }
+}
+
+export async function getQuotationByIdClient(
+  id: string
+): Promise<ActionResponse<QuotationWithDetails>> {
+  const auth = getAuthenticatedTokenResponse()
+
+  if (!auth.success) {
+    return { success: false, error: auth.error }
+  }
+
+  try {
+    const data = await apiRequest<QuotationWithDetails>(`/quotes/${id}`, {
+      method: 'GET',
+      token: auth.idToken
+    })
+
+    return { success: true, data }
+  } catch (error) {
+    console.error('Get quotation by id error:', error)
+    return { success: false, error: getQuotationErrorMessage(error) }
+  }
 }
 
 export async function createQuotationClient(
