@@ -30,7 +30,7 @@ export default async function EditClothesPage({
     notFound()
   }
 
-  const basePrice = parseFloat(clothes.price)
+  const basePrice = Number(clothes.price) || 0
 
   return (
     <>

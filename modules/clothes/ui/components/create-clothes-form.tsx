@@ -11,7 +11,10 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
-import { createClothes } from '@/modules/clothes/actions/create-clothes'
+import {
+  createClothesClient,
+  uploadPreSignedImages
+} from '@/modules/clothes/lib/clothes-client'
 import { createClothesSchema } from '@/modules/clothes/schemas'
 
 import { Badge } from '@/components/ui/badge'
@@ -80,7 +83,7 @@ export function CreateClothesForm() {
         }))
       }
 
-      const result = await createClothes(serverData)
+      const result = await createClothesClient(serverData)
 
       if (result.success) {
         if (
@@ -88,24 +91,10 @@ export function CreateClothesForm() {
           result.data.preSignedPuts.length > 0
         ) {
           try {
-            const uploadPromises = result.data.preSignedPuts.map(
-              async (preSignedPut, index) => {
-                const file = values.images[index]?.file
-                if (!file) return
-
-                const response = await fetch(preSignedPut.putUrl, {
-                  method: 'PUT',
-                  body: file,
-                  headers: preSignedPut.requiredHeaders
-                })
-
-                if (!response.ok) {
-                  throw new Error(`Failed to upload image ${index + 1}`)
-                }
-              }
+            await uploadPreSignedImages(
+              result.data.preSignedPuts,
+              values.images.map(image => image.file)
             )
-
-            await Promise.all(uploadPromises)
           } catch (uploadError) {
             console.error('Error uploading images:', uploadError)
             toast.error(
