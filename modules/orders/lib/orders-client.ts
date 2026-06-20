@@ -53,6 +53,10 @@ export async function getOrdersClient(params?: {
 
     return { success: true, data }
   } catch (error) {
+    if (error instanceof ApiError && error.status === 404) {
+      return { success: true, data: [] }
+    }
+
     console.error('Get orders error:', error)
     return {
       success: false,
