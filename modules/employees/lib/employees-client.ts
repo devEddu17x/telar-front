@@ -1,7 +1,11 @@
 'use client'
 
 import { ApiError, apiRequest } from '@/lib/api/client'
-import { getClientIdToken } from '@/modules/auth/lib/session-client'
+
+import {
+  getClientIdToken,
+  normalizeRoles
+} from '@/modules/auth/lib/session-client'
 import type { ActionResponse } from '@/modules/auth/types'
 
 import { EMPLOYEE_ERRORS } from '../constants'
@@ -11,7 +15,11 @@ import {
   type CreateEmployeeInput,
   type UpdateEmployeeProfileInput
 } from '../schemas'
-import type { CreateEmployeeResponse, GetCurrentEmployeeResponse } from '../types'
+import type {
+  CreateEmployeeResponse,
+  Employee,
+  GetCurrentEmployeeResponse
+} from '../types'
 
 interface UpdateEmployeeStatusInput {
   employeeId: string
@@ -111,6 +119,68 @@ export async function createEmployeeClient(
   }
 }
 
+export async function getEmployeesClient(): Promise<
+  ActionResponse<Employee[]>
+> {
+  const auth = getAuthenticatedTokenResponse()
+
+  if (!auth.success) {
+    return { success: false, error: auth.error }
+  }
+
+  try {
+    const data = await apiRequest<Employee[]>('/admin/employees', {
+      method: 'GET',
+      token: auth.idToken
+    })
+
+    return {
+      success: true,
+      data: data.map(employee => ({
+        ...employee,
+        roles: normalizeRoles(employee.roles)
+      }))
+    }
+  } catch (error) {
+    console.error('Get employees error:', error)
+    return {
+      success: false,
+      error: getEmployeeErrorMessage(error)
+    }
+  }
+}
+
+export async function getCurrentEmployeeClient(): Promise<
+  ActionResponse<GetCurrentEmployeeResponse>
+> {
+  const auth = getAuthenticatedTokenResponse()
+
+  if (!auth.success) {
+    return { success: false, error: auth.error }
+  }
+
+  try {
+    const data = await apiRequest<GetCurrentEmployeeResponse>('/employees/me', {
+      method: 'GET',
+      token: auth.idToken
+    })
+
+    return {
+      success: true,
+      data: {
+        ...data,
+        roles: normalizeRoles(data.roles)
+      }
+    }
+  } catch (error) {
+    console.error('Get current employee error:', error)
+    return {
+      success: false,
+      error: getEmployeeErrorMessage(error)
+    }
+  }
+}
+
 export async function updateCurrentEmployeeClient(
   input: UpdateEmployeeProfileInput
 ): Promise<ActionResponse<GetCurrentEmployeeResponse>> {
@@ -142,7 +212,10 @@ export async function updateCurrentEmployeeClient(
     console.error('Update current employee error:', error)
     return {
       success: false,
-      error: error instanceof ApiError ? error.message : 'Error al actualizar el perfil'
+      error:
+        error instanceof ApiError
+          ? error.message
+          : 'Error al actualizar el perfil'
     }
   }
 }
