@@ -221,8 +221,6 @@ export async function searchClothesClient(
   if (params.gender) searchParams.set('gender', params.gender.toLowerCase())
   if (params.isDraft !== undefined)
     searchParams.set('isDraft', String(params.isDraft))
-  if (params.isInEcommerce !== undefined)
-    searchParams.set('isInEcommerce', String(params.isInEcommerce))
 
   const queryString = searchParams.toString()
   const endpoint = queryString ? `/clothes/search?${queryString}` : '/clothes'

@@ -126,6 +126,14 @@ export function getClientSession(): UserSession | null {
   }
 }
 
+export function getRedirectPathByRole(roles: Role[]): string {
+  if (roles.includes('owner')) return REDIRECT_PATHS.owner
+  if (roles.includes('admin')) return REDIRECT_PATHS.admin
+  if (roles.includes('seller')) return REDIRECT_PATHS.seller
+
+  return '/sign-in'
+}
+
 export function getRedirectPathFromToken(idToken: string) {
   const payload = decodeJwt<CognitoJWTPayload>(idToken)
   const roles = normalizeRoles(payload['cognito:groups'])
@@ -134,11 +142,7 @@ export function getRedirectPathFromToken(idToken: string) {
     return '/tenant-setup'
   }
 
-  if (roles.includes('owner')) return REDIRECT_PATHS.owner
-  if (roles.includes('admin')) return REDIRECT_PATHS.admin
-  if (roles.includes('seller')) return REDIRECT_PATHS.seller
-
-  return '/sign-in'
+  return getRedirectPathByRole(roles)
 }
 
 async function refreshClientSessionInternal() {

@@ -56,8 +56,7 @@ export function EditClothesForm({ clothes, onUpdated }: EditClothesFormProps) {
       name: clothes.name ?? '',
       description: clothes.description ?? '',
       price: parsedPrice,
-      isDraft: Boolean(clothes.isDraft),
-      isInEcommerce: Boolean(clothes.isInEcommerce)
+      isDraft: Boolean(clothes.isDraft)
     }
   })
 
@@ -205,14 +204,7 @@ export function EditClothesForm({ clothes, onUpdated }: EditClothesFormProps) {
                   <FormControl>
                     <Switch
                       checked={field.value}
-                      onCheckedChange={checked => {
-                        field.onChange(checked)
-                        if (checked) {
-                          form.setValue('isInEcommerce', false, {
-                            shouldDirty: true
-                          })
-                        }
-                      }}
+                      onCheckedChange={field.onChange}
                     />
                   </FormControl>
                 </FormItem>
