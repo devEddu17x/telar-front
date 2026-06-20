@@ -6,7 +6,12 @@ import { getClientIdToken } from '@/modules/auth/lib/session-client'
 import type { ActionResponse } from '@/modules/auth/types'
 
 import { cancelOrderSchema } from '../schemas'
-import type { CreateOrderInput, Order, OrderStatus } from '../types'
+import type {
+  CreateOrderInput,
+  Order,
+  OrderStatus,
+  OrderWithDetails
+} from '../types'
 
 function getAuthenticatedTokenResponse() {
   const idToken = getClientIdToken()
@@ -24,6 +29,64 @@ function getOrderErrorMessage(error: unknown, fallback: string) {
   if (error.status === 404) return 'Orden no encontrada'
 
   return error.message || fallback
+}
+
+export async function getOrdersClient(params?: {
+  status?: OrderStatus
+}): Promise<ActionResponse<Order[]>> {
+  const auth = getAuthenticatedTokenResponse()
+
+  if (!auth.success) {
+    return { success: false, error: auth.error }
+  }
+
+  const searchParams = new URLSearchParams()
+  if (params?.status) searchParams.set('status', params.status)
+  const query = searchParams.toString()
+  const endpoint = query ? `/orders?${query}` : '/orders'
+
+  try {
+    const data = await apiRequest<Order[]>(endpoint, {
+      method: 'GET',
+      token: auth.idToken
+    })
+
+    return { success: true, data }
+  } catch (error) {
+    console.error('Get orders error:', error)
+    return {
+      success: false,
+      error: getOrderErrorMessage(
+        error,
+        'No se pudo cargar la lista de órdenes'
+      )
+    }
+  }
+}
+
+export async function getOrderByIdClient(
+  id: string
+): Promise<ActionResponse<OrderWithDetails>> {
+  const auth = getAuthenticatedTokenResponse()
+
+  if (!auth.success) {
+    return { success: false, error: auth.error }
+  }
+
+  try {
+    const data = await apiRequest<OrderWithDetails>(`/orders/${id}`, {
+      method: 'GET',
+      token: auth.idToken
+    })
+
+    return { success: true, data }
+  } catch (error) {
+    console.error('Get order by id error:', error)
+    return {
+      success: false,
+      error: getOrderErrorMessage(error, 'No se pudo cargar la orden')
+    }
+  }
 }
 
 export async function createOrderClient(
