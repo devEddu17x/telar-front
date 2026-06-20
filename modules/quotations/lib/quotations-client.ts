@@ -71,6 +71,10 @@ export async function getQuotationsClient(params?: {
 
     return { success: true, data }
   } catch (error) {
+    if (error instanceof ApiError && error.status === 404) {
+      return { success: true, data: [] }
+    }
+
     console.error('Get quotations error:', error)
     return { success: false, error: getQuotationErrorMessage(error) }
   }

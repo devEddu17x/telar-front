@@ -86,6 +86,7 @@ function QuotationsSearchResultsContent({
 
       if (result.success) {
         setQuotations(result.data ?? [])
+        setError(null)
       } else {
         setQuotations([])
         setError(result.error || 'No se pudo cargar la lista de cotizaciones')
