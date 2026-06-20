@@ -49,6 +49,10 @@ export function QuotationsTable({
   hasFilters = false,
   basePath = '/admin/quotations'
 }: QuotationsTableProps) {
+  const ordersBasePath = basePath.startsWith('/seller')
+    ? '/seller/orders'
+    : '/admin/orders'
+
   function formatPrice(price: string | number) {
     return `S/ ${Number(price).toFixed(2)}`
   }
@@ -150,6 +154,7 @@ export function QuotationsTable({
                         <CreateOrderDialog
                           quoteId={quotation.id}
                           quotationCode={quotation.id.slice(0, 8)}
+                          basePath={ordersBasePath}
                           trigger={
                             <DropdownMenuItem
                               onSelect={e => e.preventDefault()}

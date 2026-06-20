@@ -40,11 +40,8 @@ import {
   PopoverTrigger
 } from '@/components/ui/popover'
 
-import { createOrder } from '../../actions'
-import {
-  DELIVERY_DATE_MAX_DAYS,
-  DELIVERY_DATE_MIN_DAYS
-} from '../../constants'
+import { DELIVERY_DATE_MAX_DAYS, DELIVERY_DATE_MIN_DAYS } from '../../constants'
+import { createOrderClient } from '../../lib/orders-client'
 import {
   createOrderDefaultValues,
   createOrderSchema,
@@ -55,12 +52,14 @@ import { AddressForm } from './address-form'
 interface CreateOrderDialogProps {
   quoteId: string
   quotationCode?: string
+  basePath?: string
   trigger?: React.ReactNode
 }
 
 export function CreateOrderDialog({
   quoteId,
   quotationCode,
+  basePath = '/admin/orders',
   trigger
 }: CreateOrderDialogProps) {
   const router = useRouter()
@@ -82,15 +81,17 @@ export function CreateOrderDialog({
   })
 
   // Obtiene el "hoy" en la zona horaria de Lima para las validaciones
-  const limaStr = new Date().toLocaleString('en-US', { timeZone: 'America/Lima' })
+  const limaStr = new Date().toLocaleString('en-US', {
+    timeZone: 'America/Lima'
+  })
   const today = startOfDay(new Date(limaStr))
-  
+
   const minDate = addDays(today, DELIVERY_DATE_MIN_DAYS)
   const maxDate = addDays(today, DELIVERY_DATE_MAX_DAYS)
 
   const onSubmit = (values: CreateOrderFormValues) => {
     startTransition(async () => {
-      const result = await createOrder({
+      const result = await createOrderClient({
         quoteId: values.quoteId,
         deliveryDate: format(values.deliveryDate, 'yyyy-MM-dd'),
         address: {
@@ -107,7 +108,8 @@ export function CreateOrderDialog({
         })
         setOpen(false)
         form.reset()
-        router.push(`/admin/orders/${result.data?.id}`)
+        router.refresh()
+        router.push(`${basePath}/${result.data?.id}`)
       } else {
         toast.error('Error al crear la orden', {
           description: result.error

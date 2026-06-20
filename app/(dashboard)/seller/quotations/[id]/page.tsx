@@ -93,7 +93,11 @@ export default async function SellerQuotationDetailPage({
           </Button>
           {quotation.status === 'PENDING' && (
             <>
-              <CreateOrderDialog quoteId={id} quotationCode={id.slice(0, 8)} />
+              <CreateOrderDialog
+                quoteId={id}
+                quotationCode={id.slice(0, 8)}
+                basePath='/seller/orders'
+              />
               <Button asChild>
                 <Link href={`/seller/quotations/${id}/edit`}>
                   <Edit className='mr-2 h-4 w-4' />
@@ -106,7 +110,7 @@ export default async function SellerQuotationDetailPage({
         </div>
       </div>
 
-      <QuotationDetail quotation={quotation} />
+      <QuotationDetail quotation={quotation} ordersBasePath='/seller/orders' />
     </div>
   )
 }
