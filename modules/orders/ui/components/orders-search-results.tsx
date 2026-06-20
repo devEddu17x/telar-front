@@ -85,6 +85,7 @@ function OrdersSearchResultsContent({
 
       if (result.success) {
         setOrders(result.data ?? [])
+        setError(null)
       } else {
         setOrders([])
         setError(result.error || 'No se pudo cargar la lista de órdenes')
