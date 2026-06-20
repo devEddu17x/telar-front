@@ -12,6 +12,8 @@ import {
   Home
 } from 'lucide-react'
 
+import { detailPath } from '@/lib/routes'
+
 import { getClothesWithVariantsClient } from '@/modules/clothes/lib/clothes-client'
 import type { Clothes } from '@/modules/clothes/types'
 import { QUOTATION_STATUSES } from '@/modules/quotations/constants'
@@ -138,7 +140,7 @@ export function EditQuotationPageClient({
             <>
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link href={`${basePath}/${id}`}>Detalle</Link>
+                  <Link href={detailPath(basePath, id)}>Detalle</Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator>
@@ -207,7 +209,7 @@ export function EditQuotationPageClient({
 
               <div className='flex gap-3'>
                 <Button variant='outline' asChild>
-                  <Link href={`${basePath}/${id}`}>
+                  <Link href={detailPath(basePath, id)}>
                     <ArrowLeft className='mr-2 h-4 w-4' />
                     Volver al detalle
                   </Link>

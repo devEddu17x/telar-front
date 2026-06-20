@@ -6,6 +6,8 @@ import Link from 'next/link'
 
 import { AlertCircle, ArrowLeft, Edit } from 'lucide-react'
 
+import { editPath } from '@/lib/routes'
+
 import { CreateOrderDialog } from '@/modules/orders/ui/components'
 import { QUOTATION_STATUSES } from '@/modules/quotations/constants'
 import { getQuotationByIdClient } from '@/modules/quotations/lib/quotations-client'
@@ -172,7 +174,7 @@ export function QuotationDetailPageClient({
                     basePath={ordersBasePath}
                   />
                   <Button asChild>
-                    <Link href={`${basePath}/${id}/edit`}>
+                    <Link href={editPath(basePath, id)}>
                       <Edit className='mr-2 h-4 w-4' />
                       Editar
                     </Link>

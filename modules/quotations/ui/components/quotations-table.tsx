@@ -14,6 +14,8 @@ import {
 
 import { format } from 'date-fns'
 
+import { detailPath, editPath } from '@/lib/routes'
+
 import { CreateOrderDialog } from '@/modules/orders/ui/components'
 import { QUOTATION_STATUSES } from '@/modules/quotations/constants'
 import type { Quotation } from '@/modules/quotations/types'
@@ -144,7 +146,7 @@ export function QuotationsTable({
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align='end'>
                     <DropdownMenuItem asChild>
-                      <Link href={`${basePath}/${quotation.id}`}>
+                      <Link href={detailPath(basePath, quotation.id)}>
                         <Eye className='mr-2 h-4 w-4' />
                         Ver
                       </Link>
@@ -165,7 +167,7 @@ export function QuotationsTable({
                           }
                         />
                         <DropdownMenuItem asChild>
-                          <Link href={`${basePath}/${quotation.id}/edit`}>
+                          <Link href={editPath(basePath, quotation.id)}>
                             <Edit className='mr-2 h-4 w-4' />
                             Editar
                           </Link>

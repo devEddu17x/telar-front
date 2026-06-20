@@ -5,6 +5,8 @@ import Link from 'next/link'
 
 import { Edit, Eye, ImageOff, PackageSearch, Search } from 'lucide-react'
 
+import { detailPath, editPath } from '@/lib/routes'
+
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -103,7 +105,7 @@ export function ClothesTable({
                 </TableCell>
                 <TableCell className='font-medium'>
                   <Link
-                    href={`${basePath}/${item.id}`}
+                    href={detailPath(basePath, item.id)}
                     className='hover:text-primary hover:underline'
                   >
                     {item.name}
@@ -127,14 +129,17 @@ export function ClothesTable({
                 <TableCell>
                   <div className='flex justify-end gap-1'>
                     <Button variant='ghost' size='icon-sm' asChild>
-                      <Link href={`${basePath}/${item.id}`} aria-label='Ver'>
+                      <Link
+                        href={detailPath(basePath, item.id)}
+                        aria-label='Ver'
+                      >
                         <Eye className='h-4 w-4' />
                       </Link>
                     </Button>
                     {canEdit && (
                       <Button variant='ghost' size='icon-sm' asChild>
                         <Link
-                          href={`${basePath}/${item.id}/edit`}
+                          href={editPath(basePath, item.id)}
                           aria-label='Editar'
                         >
                           <Edit className='h-4 w-4' />
