@@ -1,13 +1,17 @@
 'use client'
 
 import { useState } from 'react'
+
+import { useRouter } from 'next/navigation'
+
+import { User } from 'lucide-react'
+
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
-import { User } from 'lucide-react'
-import { useRouter } from 'next/navigation'
 
 import type { ActionResponse } from '@/modules/auth/types'
+
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -20,18 +24,25 @@ import {
 import { Input } from '@/components/ui/input'
 
 import { updateCurrentEmployeeClient } from '../../lib/employees-client'
-import { updateEmployeeProfileSchema, type UpdateEmployeeProfileInput } from '../../schemas'
+import {
+  updateEmployeeProfileSchema,
+  type UpdateEmployeeProfileInput
+} from '../../schemas'
 import type { GetCurrentEmployeeResponse } from '../../types'
 
 interface UpdateMyProfileFormProps {
   currentEmployee: GetCurrentEmployeeResponse
+  onUpdated?: (employee: GetCurrentEmployeeResponse) => void
 }
 
 const initialState: ActionResponse<GetCurrentEmployeeResponse> = {
   success: false
 }
 
-export function UpdateMyProfileForm({ currentEmployee }: UpdateMyProfileFormProps) {
+export function UpdateMyProfileForm({
+  currentEmployee,
+  onUpdated
+}: UpdateMyProfileFormProps) {
   const router = useRouter()
   const [state, setState] = useState(initialState)
   const [isPending, setIsPending] = useState(false)
@@ -56,6 +67,7 @@ export function UpdateMyProfileForm({ currentEmployee }: UpdateMyProfileFormProp
         names: result.data.names,
         lastNames: result.data.lastNames
       })
+      onUpdated?.(result.data)
       router.refresh()
     }
 
@@ -76,7 +88,7 @@ export function UpdateMyProfileForm({ currentEmployee }: UpdateMyProfileFormProp
                 <FormLabel className='text-sm font-medium'>Nombres</FormLabel>
                 <FormControl>
                   <div className='relative'>
-                    <User className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
+                    <User className='text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2' />
                     <Input
                       placeholder='Juan Carlos'
                       className='pl-9'
@@ -96,7 +108,7 @@ export function UpdateMyProfileForm({ currentEmployee }: UpdateMyProfileFormProp
                 <FormLabel className='text-sm font-medium'>Apellidos</FormLabel>
                 <FormControl>
                   <div className='relative'>
-                    <User className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
+                    <User className='text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2' />
                     <Input
                       placeholder='Pérez García'
                       className='pl-9'
@@ -111,7 +123,7 @@ export function UpdateMyProfileForm({ currentEmployee }: UpdateMyProfileFormProp
         </div>
 
         {state.error && (
-          <div className='rounded-lg bg-destructive/10 border border-destructive/20 px-4 py-3 text-sm text-destructive'>
+          <div className='bg-destructive/10 border-destructive/20 text-destructive rounded-lg border px-4 py-3 text-sm'>
             {state.error}
           </div>
         )}
