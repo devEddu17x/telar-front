@@ -12,6 +12,7 @@ import { es } from 'date-fns/locale'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
+import { detailPath } from '@/lib/routes'
 import { cn } from '@/lib/utils'
 
 import { Button } from '@/components/ui/button'
@@ -109,7 +110,11 @@ export function CreateOrderDialog({
         setOpen(false)
         form.reset()
         router.refresh()
-        router.push(`${basePath}/${result.data?.id}`)
+        if (result.data?.id) {
+          router.push(detailPath(basePath, result.data.id))
+        } else {
+          router.push(basePath)
+        }
       } else {
         toast.error('Error al crear la orden', {
           description: result.error
