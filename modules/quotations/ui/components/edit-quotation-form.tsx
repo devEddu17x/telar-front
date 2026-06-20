@@ -19,6 +19,8 @@ import {
 
 import { toast } from 'sonner'
 
+import { detailPath } from '@/lib/routes'
+
 import type { Clothes } from '@/modules/clothes/types'
 import { updateQuotationClient } from '@/modules/quotations/lib/quotations-client'
 import type {
@@ -228,7 +230,7 @@ export function EditQuotationForm({
       if (result.success) {
         toast.success('Cotización actualizada exitosamente')
         router.refresh()
-        router.push(`${basePath}/${quotation.id}`)
+        router.push(detailPath(basePath, quotation.id))
       } else {
         toast.error(result.error || 'Error al actualizar la cotización')
       }
