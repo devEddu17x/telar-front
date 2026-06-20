@@ -73,12 +73,14 @@ interface EditVariantsSectionProps {
   clothesId: string
   variants: ClothesVariant[]
   basePrice: number
+  onChanged?: () => void
 }
 
 export function EditVariantsSection({
   clothesId,
   variants,
-  basePrice
+  basePrice,
+  onChanged
 }: EditVariantsSectionProps) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
@@ -131,6 +133,7 @@ export function EditVariantsSection({
       if (result.success) {
         toast.success('Variante actualizada')
         setEditingVariant(null)
+        onChanged?.()
         router.refresh()
       } else {
         toast.error(result.error || 'Error al actualizar')
@@ -151,6 +154,7 @@ export function EditVariantsSection({
 
       if (result.success) {
         toast.success('Variante eliminada')
+        onChanged?.()
         router.refresh()
       } else {
         toast.error(result.error || 'Error al eliminar')
@@ -182,6 +186,7 @@ export function EditVariantsSection({
         toast.success('Variante agregada')
         setAddDialogOpen(false)
         addForm.reset()
+        onChanged?.()
         router.refresh()
       } else {
         toast.error(result.error || 'Error al agregar variante')
