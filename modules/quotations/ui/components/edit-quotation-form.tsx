@@ -20,7 +20,7 @@ import {
 import { toast } from 'sonner'
 
 import type { Clothes } from '@/modules/clothes/types'
-import { updateQuotation } from '@/modules/quotations/actions/update-quotation'
+import { updateQuotationClient } from '@/modules/quotations/lib/quotations-client'
 import type {
   Customization,
   QuotationWithDetails,
@@ -223,10 +223,11 @@ export function EditQuotationForm({
     }
 
     startTransition(async () => {
-      const result = await updateQuotation(quotation.id, data)
+      const result = await updateQuotationClient(quotation.id, data)
 
       if (result.success) {
         toast.success('Cotización actualizada exitosamente')
+        router.refresh()
         router.push(`${basePath}/${quotation.id}`)
       } else {
         toast.error(result.error || 'Error al actualizar la cotización')
