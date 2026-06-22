@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation'
 import { CircleDollarSign, Save, Sparkles } from 'lucide-react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { toast } from 'sonner'
 
 import { updateClothesClient } from '@/modules/clothes/lib/clothes-client'
@@ -60,8 +60,8 @@ export function EditClothesForm({ clothes, onUpdated }: EditClothesFormProps) {
     }
   })
 
-  const watchedPrice = form.watch('price')
-  const watchedIsDraft = form.watch('isDraft')
+  const watchedPrice = useWatch({ control: form.control, name: 'price' })
+  const watchedIsDraft = useWatch({ control: form.control, name: 'isDraft' })
 
   const variants = clothes.clothes_variant ?? []
   const minAdditional = Math.min(

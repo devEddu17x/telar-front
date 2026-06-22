@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation'
 import { CheckIcon, EyeIcon, EyeOffIcon, OctagonAlertIcon } from 'lucide-react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Controller, useForm } from 'react-hook-form'
+import { Controller, useForm, useWatch } from 'react-hook-form'
 
 import { forceChangePasswordClient } from '@/modules/auth/lib/auth-client'
 import { forceChangePasswordSchema, type ForceChangePasswordInput } from '@/modules/auth/schemas'
@@ -33,7 +33,8 @@ export function ForceChangePasswordForm() {
     defaultValues: { password: '' }
   })
 
-  const newPassword = form.watch('password') || ''
+  const newPassword =
+    useWatch({ control: form.control, name: 'password' }) || ''
 
   const reqs = {
     length: newPassword.length >= 12,

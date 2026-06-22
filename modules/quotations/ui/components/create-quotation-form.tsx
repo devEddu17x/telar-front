@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation'
 import { Save, User } from 'lucide-react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { toast } from 'sonner'
 
 import type { Client } from '@/modules/clients/types'
@@ -61,8 +61,12 @@ export function CreateQuotationForm({
     }
   })
 
-  const watchedDetails = form.watch('details')
-  const watchedCustomerId = form.watch('customerId')
+  const watchedDetails =
+    useWatch({ control: form.control, name: 'details' }) ?? []
+  const watchedCustomerId = useWatch({
+    control: form.control,
+    name: 'customerId'
+  })
 
   const canSubmit = watchedCustomerId && watchedDetails.length > 0 && !isPending
 
