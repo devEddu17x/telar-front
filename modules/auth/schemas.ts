@@ -42,11 +42,9 @@ export const signUpSchema = z.object({
       /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$/,
       'La contraseña debe incluir mayúsculas, minúsculas, números y símbolos'
     ),
-  acceptedTerms: z
-    .boolean()
-    .refine(val => val, {
-      message: 'Debes aceptar los términos y la política de privacidad'
-    })
+  acceptedTerms: z.boolean().refine(val => val, {
+    message: 'Debes aceptar los términos y la política de privacidad'
+  })
 })
 
 export const otpVerificationSchema = z.object({
