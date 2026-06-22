@@ -1,4 +1,4 @@
-## Getting Started
+## Telar Front
 
 First, run the development server:
 
