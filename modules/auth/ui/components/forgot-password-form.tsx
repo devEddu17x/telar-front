@@ -11,7 +11,10 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm } from 'react-hook-form'
 
 import { forgotPasswordClient } from '@/modules/auth/lib/auth-client'
-import { forgotPasswordSchema, type ForgotPasswordInput } from '@/modules/auth/schemas'
+import {
+  forgotPasswordSchema,
+  type ForgotPasswordInput
+} from '@/modules/auth/schemas'
 import type { ActionResponse } from '@/modules/auth/types'
 
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -49,7 +52,9 @@ export function ForgotPasswordForm() {
 
       <div className='w-full max-w-md'>
         <div className='mb-12 flex flex-col items-center'>
-          <div className='mb-2 text-4xl font-black tracking-tight text-[#2b1608]'>Telar</div>
+          <div className='mb-2 text-4xl font-black tracking-tight text-[#2b1608]'>
+            Telar
+          </div>
           <div className='h-1 w-8 rounded-full bg-[linear-gradient(45deg,#2b1608_0%,#5c4130_100%)]' />
         </div>
 
@@ -58,7 +63,9 @@ export function ForgotPasswordForm() {
             <h1 className='mb-2 text-2xl font-bold tracking-tight text-[#2b1608]'>
               Recuperar contraseña
             </h1>
-            <p className='text-sm text-[#50453f]'>Ingresa tu correo para recibir un código de recuperación.</p>
+            <p className='text-sm text-[#50453f]'>
+              Ingresa tu correo para recibir un código de recuperación.
+            </p>
           </div>
 
           <form
@@ -91,7 +98,9 @@ export function ForgotPasswordForm() {
                     />
                   </div>
                   {fieldState.error?.message && (
-                    <p className='text-sm text-red-600'>{fieldState.error.message}</p>
+                    <p className='text-sm text-red-600'>
+                      {fieldState.error.message}
+                    </p>
                   )}
                 </div>
               )}

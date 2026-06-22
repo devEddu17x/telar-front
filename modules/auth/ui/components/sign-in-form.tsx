@@ -39,8 +39,14 @@ export function SignInForm() {
 
     if (result.success && result.data?.redirectTo) {
       if (result.data.redirectTo === '/force-change-password') {
-        window.sessionStorage.setItem('auth.challengeEmail', result.data.email ?? '')
-        window.sessionStorage.setItem('auth.challengeSession', result.data.session ?? '')
+        window.sessionStorage.setItem(
+          'auth.challengeEmail',
+          result.data.email ?? ''
+        )
+        window.sessionStorage.setItem(
+          'auth.challengeSession',
+          result.data.session ?? ''
+        )
       }
       router.push(result.data.redirectTo)
       return
@@ -67,7 +73,9 @@ export function SignInForm() {
 
       <div className='w-full max-w-md'>
         <div className='mb-12 flex flex-col items-center'>
-          <div className='mb-2 text-4xl font-black tracking-tight text-[#2b1608]'>Telar</div>
+          <div className='mb-2 text-4xl font-black tracking-tight text-[#2b1608]'>
+            Telar
+          </div>
           <div className='h-1 w-8 rounded-full bg-[linear-gradient(45deg,#2b1608_0%,#5c4130_100%)]' />
         </div>
 
@@ -76,7 +84,9 @@ export function SignInForm() {
             <h1 className='mb-2 text-2xl font-bold tracking-tight text-[#2b1608]'>
               Iniciar sesión
             </h1>
-            <p className='text-sm text-[#50453f]'>Bienvenido de nuevo a Telar.</p>
+            <p className='text-sm text-[#50453f]'>
+              Bienvenido de nuevo a Telar.
+            </p>
           </div>
 
           <form
@@ -109,7 +119,9 @@ export function SignInForm() {
                     />
                   </div>
                   {fieldState.error?.message && (
-                    <p className='text-sm text-red-600'>{fieldState.error.message}</p>
+                    <p className='text-sm text-red-600'>
+                      {fieldState.error.message}
+                    </p>
                   )}
                 </div>
               )}
@@ -143,7 +155,11 @@ export function SignInForm() {
                       size='sm'
                       className='absolute top-0 right-0 h-full px-3 hover:bg-transparent'
                       onClick={() => setShowPassword(prev => !prev)}
-                      aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                      aria-label={
+                        showPassword
+                          ? 'Ocultar contraseña'
+                          : 'Mostrar contraseña'
+                      }
                     >
                       {showPassword ? (
                         <EyeOffIcon className='h-4 w-4 text-[#50453f]' />
@@ -161,7 +177,9 @@ export function SignInForm() {
                     </Link>
                   </div>
                   {fieldState.error?.message && (
-                    <p className='text-sm text-red-600'>{fieldState.error.message}</p>
+                    <p className='text-sm text-red-600'>
+                      {fieldState.error.message}
+                    </p>
                   )}
                 </div>
               )}
