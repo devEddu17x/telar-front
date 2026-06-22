@@ -16,13 +16,19 @@ export const signUpSchema = z.object({
     .trim()
     .min(2, 'El nombre debe tener al menos 2 caracteres')
     .max(40, 'El nombre no puede exceder 40 caracteres')
-    .regex(/^[a-zA-ZÀ-ÿ\s'-]+$/, 'El nombre solo puede incluir letras y espacios'),
+    .regex(
+      /^[a-zA-ZÀ-ÿ\s'-]+$/,
+      'El nombre solo puede incluir letras y espacios'
+    ),
   lastName: z
     .string()
     .trim()
     .min(2, 'El apellido debe tener al menos 2 caracteres')
     .max(40, 'El apellido no puede exceder 40 caracteres')
-    .regex(/^[a-zA-ZÀ-ÿ\s'-]+$/, 'El apellido solo puede incluir letras y espacios'),
+    .regex(
+      /^[a-zA-ZÀ-ÿ\s'-]+$/,
+      'El apellido solo puede incluir letras y espacios'
+    ),
   email: z
     .string()
     .trim()
@@ -38,7 +44,9 @@ export const signUpSchema = z.object({
     ),
   acceptedTerms: z
     .boolean()
-    .refine(val => val, { message: 'Debes aceptar los términos y la política de privacidad' })
+    .refine(val => val, {
+      message: 'Debes aceptar los términos y la política de privacidad'
+    })
 })
 
 export const otpVerificationSchema = z.object({
