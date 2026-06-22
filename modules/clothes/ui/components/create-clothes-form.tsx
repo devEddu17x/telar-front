@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation'
 import { CircleDollarSign, Package, Sparkles } from 'lucide-react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
@@ -59,10 +59,12 @@ export function CreateClothesForm() {
     }
   })
 
-  const watchedPrice = form.watch('price')
-  const watchedVariants = form.watch('variants')
-  const watchedImages = form.watch('images')
-  const watchedName = form.watch('name')
+  const watchedPrice = useWatch({ control: form.control, name: 'price' })
+  const watchedVariants =
+    useWatch({ control: form.control, name: 'variants' }) ?? []
+  const watchedImages =
+    useWatch({ control: form.control, name: 'images' }) ?? []
+  const watchedName = useWatch({ control: form.control, name: 'name' })
 
   // Calcular precio mínimo y máximo
   const minAdditional = Math.min(...watchedVariants.map(v => v.additional || 0))
