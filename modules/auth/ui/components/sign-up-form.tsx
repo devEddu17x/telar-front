@@ -179,7 +179,9 @@ export function SignUpForm() {
       <div className='relative hidden w-1/2 items-center justify-center overflow-hidden bg-[#2b1608] p-12 md:flex'>
         <div className='absolute inset-0 bg-[radial-gradient(circle_at_top_right,#5c4130_0%,#2b1608_60%)] opacity-90' />
         <div className='relative z-10 max-w-md text-white'>
-          <h1 className='mb-6 text-6xl leading-none font-black tracking-tight'>Telar</h1>
+          <h1 className='mb-6 text-6xl leading-none font-black tracking-tight'>
+            Telar
+          </h1>
           <p className='text-2xl leading-relaxed font-light text-[#e6bea8]'>
             Crea tu cuenta y comienza a gestionar tu negocio.
           </p>
@@ -194,7 +196,6 @@ export function SignUpForm() {
       {/* Panel derecho — formulario */}
       <div className='flex flex-1 items-center justify-center p-6 md:p-12 lg:p-24'>
         <div className='w-full max-w-md space-y-8'>
-
           {/* Paso 1: crear cuenta */}
           {currentStep === 'create-account' && (
             <>
@@ -202,7 +203,9 @@ export function SignUpForm() {
                 <h2 className='text-4xl leading-tight font-bold tracking-tight text-[#2b1608]'>
                   Comienza tu viaje
                 </h2>
-                <p className='font-medium text-[#50453f]'>Crea una cuenta para continuar.</p>
+                <p className='font-medium text-[#50453f]'>
+                  Crea una cuenta para continuar.
+                </p>
               </div>
 
               {errorMessage && (
@@ -219,7 +222,10 @@ export function SignUpForm() {
                 <div className='space-y-5'>
                   <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
                     <div className='space-y-1.5'>
-                      <label className='ml-1 block text-sm font-semibold text-[#50453f]' htmlFor='firstName'>
+                      <label
+                        className='ml-1 block text-sm font-semibold text-[#50453f]'
+                        htmlFor='firstName'
+                      >
                         Nombre
                       </label>
                       <Input
@@ -236,7 +242,10 @@ export function SignUpForm() {
                     </div>
 
                     <div className='space-y-1.5'>
-                      <label className='ml-1 block text-sm font-semibold text-[#50453f]' htmlFor='lastName'>
+                      <label
+                        className='ml-1 block text-sm font-semibold text-[#50453f]'
+                        htmlFor='lastName'
+                      >
                         Apellido
                       </label>
                       <Input
@@ -254,7 +263,10 @@ export function SignUpForm() {
                   </div>
 
                   <div className='space-y-1.5'>
-                    <label className='ml-1 block text-sm font-semibold text-[#50453f]' htmlFor='signup-email'>
+                    <label
+                      className='ml-1 block text-sm font-semibold text-[#50453f]'
+                      htmlFor='signup-email'
+                    >
                       Correo electrónico
                     </label>
                     <Input
@@ -272,7 +284,10 @@ export function SignUpForm() {
                   </div>
 
                   <div className='space-y-1.5'>
-                    <label className='ml-1 block text-sm font-semibold text-[#50453f]' htmlFor='signup-password'>
+                    <label
+                      className='ml-1 block text-sm font-semibold text-[#50453f]'
+                      htmlFor='signup-password'
+                    >
                       Contraseña
                     </label>
                     <div className='relative'>
@@ -303,11 +318,22 @@ export function SignUpForm() {
                       </p>
                     )}
                     <div className='mt-2 text-xs leading-relaxed'>
-                      <p className='mb-1.5 font-medium text-[#50453f]'>Debe incluir al menos:</p>
+                      <p className='mb-1.5 font-medium text-[#50453f]'>
+                        Debe incluir al menos:
+                      </p>
                       <ul className='space-y-1.5'>
-                        <RequirementItem met={reqs.length} text='12 caracteres' />
-                        <RequirementItem met={reqs.lowercase} text='Una minúscula' />
-                        <RequirementItem met={reqs.uppercase} text='Una mayúscula' />
+                        <RequirementItem
+                          met={reqs.length}
+                          text='12 caracteres'
+                        />
+                        <RequirementItem
+                          met={reqs.lowercase}
+                          text='Una minúscula'
+                        />
+                        <RequirementItem
+                          met={reqs.uppercase}
+                          text='Una mayúscula'
+                        />
                         <RequirementItem met={reqs.number} text='Un número' />
                         <RequirementItem met={reqs.symbol} text='Un símbolo' />
                       </ul>
@@ -324,12 +350,14 @@ export function SignUpForm() {
                         <Checkbox
                           id='acceptedTerms'
                           checked={field.value}
-                          onCheckedChange={checked => field.onChange(Boolean(checked))}
+                          onCheckedChange={checked =>
+                            field.onChange(Boolean(checked))
+                          }
                           className='mt-0.5 data-[state=checked]:bg-[#2b1608]'
                         />
                         <span className='text-xs leading-relaxed text-[#50453f]'>
-                          Al crear una cuenta, aceptas nuestros Términos de Servicio y
-                          Política de Privacidad.
+                          Al crear una cuenta, aceptas nuestros Términos de
+                          Servicio y Política de Privacidad.
                         </span>
                       </label>
                     )}
@@ -386,7 +414,9 @@ export function SignUpForm() {
 
                 {verificationSuccessMessage && (
                   <Alert className='border-[#2b1608]/10 bg-[#fff8f3] text-[#2b1608]'>
-                    <AlertDescription>{verificationSuccessMessage}</AlertDescription>
+                    <AlertDescription>
+                      {verificationSuccessMessage}
+                    </AlertDescription>
                   </Alert>
                 )}
 
@@ -413,7 +443,9 @@ export function SignUpForm() {
                         </InputOTPGroup>
                       </InputOTP>
                       {fieldState.error?.message && (
-                        <p className='text-sm text-red-600'>{fieldState.error.message}</p>
+                        <p className='text-sm text-red-600'>
+                          {fieldState.error.message}
+                        </p>
                       )}
                     </div>
                   )}
@@ -451,7 +483,9 @@ export function SignUpForm() {
                 <div className='flex h-12 w-12 items-center justify-center rounded-full bg-[#fff8f3]'>
                   <span className='text-2xl'>✓</span>
                 </div>
-                <h3 className='text-2xl font-bold text-[#2b1608]'>¡Cuenta verificada!</h3>
+                <h3 className='text-2xl font-bold text-[#2b1608]'>
+                  ¡Cuenta verificada!
+                </h3>
               </div>
               {successMessage && (
                 <Alert className='border-[#2b1608]/10 bg-[#fff8f3] text-[#2b1608]'>
@@ -493,12 +527,16 @@ function RequirementItem({ met, text }: { met: boolean; text: string }) {
     <li className='flex items-center gap-2'>
       <div
         className={`flex h-3.5 w-3.5 items-center justify-center rounded-[3px] border ${
-          met ? 'border-[#5c4130] bg-[#5c4130] text-white' : 'border-[#d3c3bb] bg-transparent'
+          met
+            ? 'border-[#5c4130] bg-[#5c4130] text-white'
+            : 'border-[#d3c3bb] bg-transparent'
         }`}
       >
         {met && <CheckIcon className='size-2.5' strokeWidth={4} />}
       </div>
-      <span className={met ? 'font-medium text-[#5c4130]' : 'text-[#7d7068]'}>{text}</span>
+      <span className={met ? 'font-medium text-[#5c4130]' : 'text-[#7d7068]'}>
+        {text}
+      </span>
     </li>
   )
 }

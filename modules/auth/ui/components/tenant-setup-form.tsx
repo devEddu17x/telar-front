@@ -10,7 +10,10 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm } from 'react-hook-form'
 
 import { tenantSetupClient } from '@/modules/auth/lib/auth-client'
-import { tenantSetupSchema, type TenantSetupInput } from '@/modules/auth/schemas'
+import {
+  tenantSetupSchema,
+  type TenantSetupInput
+} from '@/modules/auth/schemas'
 import type { ActionResponse } from '@/modules/auth/types'
 
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -46,7 +49,9 @@ export function TenantSetupForm() {
       <div className='relative hidden w-1/2 items-center justify-center overflow-hidden bg-[#2b1608] p-12 md:flex'>
         <div className='absolute inset-0 bg-[radial-gradient(circle_at_top_right,#5c4130_0%,#2b1608_60%)] opacity-90' />
         <div className='relative z-10 max-w-md text-white'>
-          <h1 className='mb-6 text-6xl leading-none font-black tracking-tight'>Telar</h1>
+          <h1 className='mb-6 text-6xl leading-none font-black tracking-tight'>
+            Telar
+          </h1>
           <p className='text-2xl leading-relaxed font-light text-[#e6bea8]'>
             Registra tu empresa para comenzar a gestionar tu negocio.
           </p>
@@ -95,7 +100,8 @@ export function TenantSetupForm() {
                       htmlFor='company-name'
                       className='ml-1 block text-sm font-semibold text-[#50453f]'
                     >
-                      Nombre de la empresa <span className='text-red-500'>*</span>
+                      Nombre de la empresa{' '}
+                      <span className='text-red-500'>*</span>
                     </label>
                     <Input
                       {...field}
@@ -106,7 +112,9 @@ export function TenantSetupForm() {
                       aria-invalid={fieldState.invalid}
                     />
                     {fieldState.error?.message && (
-                      <p className='text-sm text-red-600'>{fieldState.error.message}</p>
+                      <p className='text-sm text-red-600'>
+                        {fieldState.error.message}
+                      </p>
                     )}
                   </div>
                 )}
@@ -122,7 +130,9 @@ export function TenantSetupForm() {
                       className='ml-1 block text-sm font-semibold text-[#50453f]'
                     >
                       RUC{' '}
-                      <span className='font-normal text-[#82746e]'>(opcional)</span>
+                      <span className='font-normal text-[#82746e]'>
+                        (opcional)
+                      </span>
                     </label>
                     <Input
                       {...field}
@@ -134,7 +144,9 @@ export function TenantSetupForm() {
                       aria-invalid={fieldState.invalid}
                     />
                     {fieldState.error?.message && (
-                      <p className='text-sm text-red-600'>{fieldState.error.message}</p>
+                      <p className='text-sm text-red-600'>
+                        {fieldState.error.message}
+                      </p>
                     )}
                   </div>
                 )}
@@ -150,7 +162,9 @@ export function TenantSetupForm() {
                       className='ml-1 block text-sm font-semibold text-[#50453f]'
                     >
                       Dirección{' '}
-                      <span className='font-normal text-[#82746e]'>(opcional)</span>
+                      <span className='font-normal text-[#82746e]'>
+                        (opcional)
+                      </span>
                     </label>
                     <Input
                       {...field}
@@ -161,7 +175,9 @@ export function TenantSetupForm() {
                       aria-invalid={fieldState.invalid}
                     />
                     {fieldState.error?.message && (
-                      <p className='text-sm text-red-600'>{fieldState.error.message}</p>
+                      <p className='text-sm text-red-600'>
+                        {fieldState.error.message}
+                      </p>
                     )}
                   </div>
                 )}

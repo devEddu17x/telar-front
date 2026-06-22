@@ -10,7 +10,10 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 
 import { forceChangePasswordClient } from '@/modules/auth/lib/auth-client'
-import { forceChangePasswordSchema, type ForceChangePasswordInput } from '@/modules/auth/schemas'
+import {
+  forceChangePasswordSchema,
+  type ForceChangePasswordInput
+} from '@/modules/auth/schemas'
 import type { ActionResponse } from '@/modules/auth/types'
 
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -26,7 +29,10 @@ export function ForceChangePasswordForm() {
   const [showPassword, setShowPassword] = useState(false)
   const [sessionError, setSessionError] = useState<string | null>(null)
 
-  const emailInfo = typeof window !== 'undefined' ? window.sessionStorage.getItem('auth.challengeEmail') : null
+  const emailInfo =
+    typeof window !== 'undefined'
+      ? window.sessionStorage.getItem('auth.challengeEmail')
+      : null
 
   const form = useForm<ForceChangePasswordInput>({
     resolver: zodResolver(forceChangePasswordSchema),
@@ -49,7 +55,9 @@ export function ForceChangePasswordForm() {
     const email = window.sessionStorage.getItem('auth.challengeEmail')
 
     if (!session || !email) {
-      setSessionError('No se encontró la sesión activa. Por favor, intenta iniciar sesión nuevamente.')
+      setSessionError(
+        'No se encontró la sesión activa. Por favor, intenta iniciar sesión nuevamente.'
+      )
       return
     }
 
@@ -77,7 +85,9 @@ export function ForceChangePasswordForm() {
 
       <div className='w-full max-w-md'>
         <div className='mb-12 flex flex-col items-center'>
-          <div className='mb-2 text-4xl font-black tracking-tight text-[#2b1608]'>Telar</div>
+          <div className='mb-2 text-4xl font-black tracking-tight text-[#2b1608]'>
+            Telar
+          </div>
           <div className='h-1 w-8 rounded-full bg-[linear-gradient(45deg,#2b1608_0%,#5c4130_100%)]' />
         </div>
 
@@ -87,7 +97,8 @@ export function ForceChangePasswordForm() {
               Cambiar contraseña
             </h1>
             <p className='text-sm text-[#50453f]'>
-              Por seguridad, debes crear una nueva contraseña para la cuenta {emailInfo ? <b>{emailInfo}</b> : ''}.
+              Por seguridad, debes crear una nueva contraseña para la cuenta{' '}
+              {emailInfo ? <b>{emailInfo}</b> : ''}.
             </p>
           </div>
 
@@ -124,7 +135,11 @@ export function ForceChangePasswordForm() {
                       size='sm'
                       className='absolute top-0 right-0 h-full px-3 hover:bg-transparent'
                       onClick={() => setShowPassword(prev => !prev)}
-                      aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                      aria-label={
+                        showPassword
+                          ? 'Ocultar contraseña'
+                          : 'Mostrar contraseña'
+                      }
                     >
                       {showPassword ? (
                         <EyeOffIcon className='h-4 w-4 text-[#50453f]' />
@@ -134,14 +149,24 @@ export function ForceChangePasswordForm() {
                     </Button>
                   </div>
                   {fieldState.error?.message && (
-                    <p className='text-sm text-red-600'>{fieldState.error.message}</p>
+                    <p className='text-sm text-red-600'>
+                      {fieldState.error.message}
+                    </p>
                   )}
                   <div className='mt-2 text-xs leading-relaxed'>
-                    <p className='mb-1.5 font-medium text-[#50453f]'>Debe incluir al menos:</p>
+                    <p className='mb-1.5 font-medium text-[#50453f]'>
+                      Debe incluir al menos:
+                    </p>
                     <ul className='space-y-1.5'>
                       <RequirementItem met={reqs.length} text='12 caracteres' />
-                      <RequirementItem met={reqs.lowercase} text='Una minúscula' />
-                      <RequirementItem met={reqs.uppercase} text='Una mayúscula' />
+                      <RequirementItem
+                        met={reqs.lowercase}
+                        text='Una minúscula'
+                      />
+                      <RequirementItem
+                        met={reqs.uppercase}
+                        text='Una mayúscula'
+                      />
                       <RequirementItem met={reqs.number} text='Un número' />
                       <RequirementItem met={reqs.symbol} text='Un símbolo' />
                     </ul>
@@ -153,7 +178,9 @@ export function ForceChangePasswordForm() {
             {(state.error || sessionError) && (
               <Alert variant='destructive' className='bg-red-50'>
                 <OctagonAlertIcon className='size-4' />
-                <AlertDescription>{state.error || sessionError}</AlertDescription>
+                <AlertDescription>
+                  {state.error || sessionError}
+                </AlertDescription>
               </Alert>
             )}
 
@@ -187,12 +214,16 @@ function RequirementItem({ met, text }: { met: boolean; text: string }) {
     <li className='flex items-center gap-2'>
       <div
         className={`flex h-3.5 w-3.5 items-center justify-center rounded-[3px] border ${
-          met ? 'border-[#5c4130] bg-[#5c4130] text-white' : 'border-[#d3c3bb] bg-transparent'
+          met
+            ? 'border-[#5c4130] bg-[#5c4130] text-white'
+            : 'border-[#d3c3bb] bg-transparent'
         }`}
       >
         {met && <CheckIcon className='size-2.5' strokeWidth={4} />}
       </div>
-      <span className={met ? 'font-medium text-[#5c4130]' : 'text-[#7d7068]'}>{text}</span>
+      <span className={met ? 'font-medium text-[#5c4130]' : 'text-[#7d7068]'}>
+        {text}
+      </span>
     </li>
   )
 }
