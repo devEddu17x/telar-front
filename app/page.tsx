@@ -5,7 +5,7 @@ import { ArrowRightIcon, LogInIcon, UserPlusIcon } from 'lucide-react'
 export const metadata = {
   title: 'Bienvenido a Telar',
   description:
-    'Gestiona operaciones, personal y ventas desde una experiencia clara, moderna y construida para tu ritmo diario.'
+    'Gestiona operaciones, personal y ventas desde una experiencia moderna y construida para tu ritmo diario.'
 }
 
 export default function Home() {
