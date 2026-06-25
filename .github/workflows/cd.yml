@@ -6,8 +6,6 @@ on:
       - develop
       - qa
       - prod
-    tags:
-      - 'v*'
   workflow_dispatch:
     inputs:
       environment:
@@ -43,8 +41,6 @@ jobs:
           elif [ "${{ github.ref }}" = "refs/heads/qa" ]; then
             ENVIRONMENT="qa"
           elif [ "${{ github.ref }}" = "refs/heads/prod" ]; then
-            ENVIRONMENT="prod"
-          elif [[ "${{ github.ref }}" == refs/tags/v* ]]; then
             ENVIRONMENT="prod"
           else
             echo "Unsupported ref: ${{ github.ref }}"
