@@ -88,6 +88,7 @@ jobs:
         shell: bash
         run: |
           PARAMETERS_JSON="$(aws ssm get-parameters \
+            --with-decryption \
             --names \
               "${SSM_PREFIX}/NEXT_PUBLIC_API_URL" \
               "${SSM_PREFIX}/NEXT_PUBLIC_AWS_COGNITO_REGION" \
