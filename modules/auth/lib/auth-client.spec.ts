@@ -2,15 +2,15 @@ import { CognitoIdentityProviderClient } from '@aws-sdk/client-cognito-identity-
 
 import { apiRequest } from '@/lib/api/client'
 
-import { signInClient, signOutClient, signUpClient } from './auth-client'
-import { clearClientSession, saveClientSession } from './session-client'
+import { signInClient, signUpClient } from './auth-client'
+import { saveClientSession } from './session-client'
 
 jest.mock('@/lib/api/client', () => ({
   apiRequest: jest.fn(),
   ApiError: class ApiError extends Error {
     status: number
-    body: any
-    constructor(status: number, message: string, body: any) {
+    body: unknown
+    constructor(status: number, message: string, body: unknown) {
       super(message)
       this.status = status
       this.body = body
@@ -29,6 +29,7 @@ jest.mock('@aws-sdk/client-cognito-identity-provider', () => {
   const MockClient = jest.fn().mockImplementation(() => ({
     send: mockSend
   }))
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ;(MockClient as any).mockSend = mockSend
 
   class DummyError extends Error {}
@@ -55,6 +56,7 @@ describe('auth-client', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mockCognitoSend = (CognitoIdentityProviderClient as any).mockSend
     mockCognitoSend.mockClear()
   })
@@ -120,6 +122,7 @@ describe('auth-client', () => {
       })
 
       expect(response.success).toBe(true)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       expect((response as any).data.redirectTo).toBe('/admin')
     })
   })
