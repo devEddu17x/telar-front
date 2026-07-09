@@ -55,7 +55,6 @@ describe('session-client', () => {
   describe('getClientSession', () => {
     it('debería decodificar el token JWT y retornar la sesión formateada', () => {
       window.localStorage.setItem('telar.idToken', 'fake-token')
-
       ;(decodeJwt as jest.Mock).mockReturnValue({
         sub: 'user-123',
         email: 'test@ejemplo.com',
@@ -79,7 +78,6 @@ describe('session-client', () => {
 
     it('debería limpiar la sesión y retornar null si el token está expirado y no hay refresh token', () => {
       window.localStorage.setItem('telar.idToken', 'fake-token')
-
       ;(decodeJwt as jest.Mock).mockReturnValue({
         exp: Math.floor(Date.now() / 1000) - 100
       })

@@ -71,7 +71,6 @@ describe('api client', () => {
       })
 
       mockRefreshClientSession.mockResolvedValueOnce('nuevo-token-123')
-
       ;(global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         text: jest.fn().mockResolvedValueOnce(JSON.stringify(mockData))
