@@ -1,10 +1,7 @@
 import { useRouter } from 'next/navigation'
 
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { toast } from 'sonner'
-
-import { createQuotationClient } from '@/modules/quotations/lib/quotations-client'
 
 import { CreateQuotationForm } from './create-quotation-form'
 
@@ -24,6 +21,7 @@ jest.mock('sonner', () => ({
 }))
 
 jest.mock('./client-selector', () => ({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ClientSelector: ({ onChange }: any) => (
     <button onClick={() => onChange('c1')}>Seleccionar Cliente Mock</button>
   )
