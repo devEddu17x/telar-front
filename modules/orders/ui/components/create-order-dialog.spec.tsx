@@ -3,8 +3,6 @@ import { useRouter } from 'next/navigation'
 import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
-import { createOrderClient } from '@/modules/orders/lib/orders-client'
-
 import { CreateOrderDialog } from './create-order-dialog'
 
 jest.mock('next/navigation', () => ({
