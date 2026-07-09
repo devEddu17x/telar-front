@@ -1,12 +1,8 @@
-import { CognitoIdentityProviderClient } from '@aws-sdk/client-cognito-identity-provider'
 import { decodeJwt } from 'jose'
 
 import {
   clearClientSession,
-  getClientIdToken,
   getClientSession,
-  getRedirectPathByRole,
-  refreshClientSession,
   saveClientSession
 } from './session-client'
 
