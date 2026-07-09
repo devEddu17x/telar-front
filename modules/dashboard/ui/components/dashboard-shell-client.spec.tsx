@@ -1,6 +1,6 @@
 import { useRouter } from 'next/navigation'
 
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, waitFor } from '@testing-library/react'
 
 import { getClientSession } from '@/modules/auth/lib/session-client'
 import { getCurrentEmployeeClient } from '@/modules/employees/lib/employees-client'
@@ -20,15 +20,18 @@ jest.mock('@/modules/employees/lib/employees-client', () => ({
 }))
 
 jest.mock('./app-sidebar', () => ({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   AppSidebar: ({ user }: any) => (
     <div data-testid='mock-sidebar'>Sidebar de {user.names}</div>
   )
 }))
 
 jest.mock('@/components/ui/sidebar', () => ({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   SidebarProvider: ({ children }: any) => (
     <div data-testid='sidebar-provider'>{children}</div>
   ),
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   SidebarInset: ({ children }: any) => (
     <div data-testid='sidebar-inset'>{children}</div>
   )
