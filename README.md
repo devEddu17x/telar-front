@@ -23,7 +23,7 @@ auto-updates as you edit the file.
 
 ## Run tests
 
-To run the unit tests, use:
+To run the unit tests, uses:
 
 ```bash
 pnpm test
