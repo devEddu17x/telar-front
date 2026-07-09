@@ -1,5 +1,3 @@
-import { refreshClientSession } from '@/modules/auth/lib/session-client'
-
 jest.mock('@/modules/auth/lib/session-client', () => ({
   refreshClientSession: jest.fn()
 }))
@@ -7,8 +5,9 @@ jest.mock('@/modules/auth/lib/session-client', () => ({
 describe('api client', () => {
   const originalEnv = process.env
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let apiRequest: any
-  let ApiError: any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockRefreshClientSession: any
 
   beforeEach(() => {
@@ -19,11 +18,12 @@ describe('api client', () => {
     global.fetch = jest.fn()
 
     mockRefreshClientSession =
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       require('@/modules/auth/lib/session-client').refreshClientSession
 
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const client = require('./client')
     apiRequest = client.apiRequest
-    ApiError = client.ApiError
   })
 
   afterEach(() => {
@@ -35,6 +35,7 @@ describe('api client', () => {
     it('debería lanzar un error si no hay NEXT_PUBLIC_API_URL', async () => {
       jest.resetModules()
       delete process.env.NEXT_PUBLIC_API_URL
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       const testClient = require('./client')
 
       await expect(testClient.apiRequest('/test')).rejects.toThrow(
