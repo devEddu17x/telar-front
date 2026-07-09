@@ -1,12 +1,10 @@
-import { ApiError, apiRequest } from '@/lib/api/client'
+import { apiRequest } from '@/lib/api/client'
 
 import { getFreshClientIdToken } from '@/modules/auth/lib/session-client'
 
 import {
   cancelOrderClient,
   createOrderClient,
-  getOrderByIdClient,
-  getOrdersClient,
   updateOrderStatusClient
 } from './orders-client'
 
