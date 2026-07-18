@@ -141,5 +141,3 @@ export function getDistrictsByCity(city: string): string[] {
 }
 
 // Rango de días para fecha de entrega
-export const DELIVERY_DATE_MIN_DAYS = 7
-export const DELIVERY_DATE_MAX_DAYS = 60

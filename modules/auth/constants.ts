@@ -29,5 +29,7 @@ export const AUTH_ERRORS = {
 
 export const COGNITO = {
   REGION: process.env.NEXT_PUBLIC_AWS_COGNITO_REGION ?? 'us-east-1',
-  CLIENT_ID: process.env.NEXT_PUBLIC_AWS_COGNITO_CLIENT_ID ?? ''
+  CLIENT_ID: process.env.NEXT_PUBLIC_AWS_COGNITO_CLIENT_ID ?? '',
+  // Empty in AWS. Set only for a local Cognito-compatible endpoint.
+  ENDPOINT: process.env.NEXT_PUBLIC_AWS_COGNITO_ENDPOINT || undefined
 } as const

@@ -171,8 +171,11 @@ export function QuickCreateClothesForm({
                         <div className='relative'>
                           <CircleDollarSign className='text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2' />
                           <Input
-                            type='text'
+                            type='number'
                             inputMode='decimal'
+                            min={1}
+                            max={1000}
+                            step={0.01}
                             placeholder='0.00'
                             className='pl-10 text-base font-medium'
                             value={field.value || ''}

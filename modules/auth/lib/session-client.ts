@@ -15,7 +15,8 @@ const REFRESH_TOKEN_STORAGE_KEY = 'telar.refreshToken'
 const TOKEN_EXPIRY_LEEWAY_SECONDS = 30
 
 const cognitoClient = new CognitoIdentityProviderClient({
-  region: COGNITO.REGION
+  region: COGNITO.REGION,
+  ...(COGNITO.ENDPOINT ? { endpoint: COGNITO.ENDPOINT } : {})
 })
 
 let refreshSessionPromise: Promise<string | null> | null = null

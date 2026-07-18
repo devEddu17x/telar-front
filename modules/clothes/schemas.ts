@@ -5,7 +5,10 @@ import { ACCEPTED_IMAGE_TYPES, MAX_IMAGE_SIZE } from './constants'
 export const variantSchema = z.object({
   gender: z.enum(['HOMBRE', 'MUJER', 'UNISEX']),
   size: z.string().min(1, 'Selecciona una talla'),
-  additional: z.number().min(0, 'El precio adicional debe ser 0 o mayor')
+  additional: z
+    .number()
+    .min(0, 'El precio adicional debe ser 0 o mayor')
+    .max(1000, 'El precio adicional no puede exceder 1000')
 })
 
 export const imageFileSchema = z.object({
@@ -27,11 +30,11 @@ export const createClothesSchema = z
     name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres'),
     description: z
       .string()
-      .min(2, 'La descripción debe tener al menos 2 caracteres'),
+      .max(1024, 'La descripción no puede exceder 1024 caracteres'),
     price: z
       .number()
-      .positive('El precio debe ser mayor a 0')
-      .min(0.01, 'El precio mínimo es 0.01'),
+      .min(1, 'El precio mínimo es 1')
+      .max(1000, 'El precio no puede exceder 1000'),
     variants: z
       .array(variantSchema)
       .min(1, 'Debe agregar al menos una variante'),
@@ -58,8 +61,8 @@ export const quickCreateClothesSchema = z.object({
   name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres'),
   price: z
     .number()
-    .positive('El precio debe ser mayor a 0')
-    .min(0.01, 'El precio mínimo es 0.01'),
+    .min(1, 'El precio mínimo es 1')
+    .max(1000, 'El precio no puede exceder 1000'),
   images: z.array(imageFileSchema).min(1, 'Debe agregar al menos una imagen')
 })
 
@@ -73,20 +76,30 @@ export const updateClothesSchema = z.object({
     .optional(),
   description: z
     .string()
-    .min(2, 'La descripción debe tener al menos 2 caracteres')
+    .max(1024, 'La descripción no puede exceder 1024 caracteres')
     .optional(),
-  price: z.number().positive('El precio debe ser mayor a 0').optional(),
+  price: z
+    .number()
+    .min(1, 'El precio mínimo es 1')
+    .max(1000, 'El precio no puede exceder 1000')
+    .optional(),
   isDraft: z.boolean().optional()
 })
 
 export const updateVariantSchema = z.object({
-  additional: z.number().min(0, 'El precio adicional debe ser 0 o mayor')
+  additional: z
+    .number()
+    .min(0, 'El precio adicional debe ser 0 o mayor')
+    .max(1000, 'El precio adicional no puede exceder 1000')
 })
 
 export const addVariantSchema = z.object({
   gender: z.enum(['HOMBRE', 'MUJER', 'UNISEX']),
   size: z.string().min(1, 'Selecciona una talla'),
-  additional: z.number().min(0, 'El precio adicional debe ser 0 o mayor')
+  additional: z
+    .number()
+    .min(0, 'El precio adicional debe ser 0 o mayor')
+    .max(1000, 'El precio adicional no puede exceder 1000')
 })
 
 export const deleteImageSchema = z.object({

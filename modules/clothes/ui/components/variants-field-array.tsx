@@ -205,6 +205,7 @@ export function VariantsFieldArray({ basePrice = 0 }: VariantsFieldArrayProps) {
                               <Input
                                 type='number'
                                 min={0}
+                                max={1000}
                                 step={0.01}
                                 placeholder='0.00'
                                 className='h-9 pl-9'

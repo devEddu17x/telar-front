@@ -1,7 +1,5 @@
-import { addDays, startOfDay } from 'date-fns'
+import { startOfDay } from 'date-fns'
 import { z } from 'zod'
-
-import { DELIVERY_DATE_MAX_DAYS, DELIVERY_DATE_MIN_DAYS } from './constants'
 
 // Obtiene el "hoy" en la zona horaria de Lima
 function getTodayInLima(): Date {
@@ -13,13 +11,22 @@ function getTodayInLima(): Date {
 
 // Schema para dirección
 export const addressSchemaRefined = z.object({
-  department: z.string().min(1, 'El departamento es requerido'),
-  city: z.string().min(1, 'La ciudad o provincia es requerida'),
-  district: z.string().min(1, 'El distrito es requerido'),
+  department: z
+    .string()
+    .min(1, 'El departamento es requerido')
+    .max(100, 'El departamento no puede exceder 100 caracteres'),
+  city: z
+    .string()
+    .min(1, 'La ciudad o provincia es requerida')
+    .max(100, 'La ciudad o provincia no puede exceder 100 caracteres'),
+  district: z
+    .string()
+    .min(1, 'El distrito es requerido')
+    .max(100, 'El distrito no puede exceder 100 caracteres'),
   street: z
     .string()
-    .min(5, 'La dirección debe tener al menos 5 caracteres')
-    .max(200, 'La dirección es muy larga')
+    .min(1, 'La dirección es requerida')
+    .max(255, 'La dirección no puede exceder 255 caracteres')
 })
 
 // Schema para crear orden
@@ -31,14 +38,8 @@ export const createOrderSchema = z.object({
     })
     .refine(date => {
       const today = getTodayInLima()
-      const minDate = addDays(today, DELIVERY_DATE_MIN_DAYS)
-      return date >= minDate
-    }, `La fecha de entrega debe ser al menos ${DELIVERY_DATE_MIN_DAYS} días después de hoy`)
-    .refine(date => {
-      const today = getTodayInLima()
-      const maxDate = addDays(today, DELIVERY_DATE_MAX_DAYS)
-      return date <= maxDate
-    }, `La fecha de entrega no puede ser más de ${DELIVERY_DATE_MAX_DAYS} días después de hoy`),
+      return date >= today
+    }, 'La fecha de entrega no puede ser anterior a hoy'),
   address: addressSchemaRefined
 })
 

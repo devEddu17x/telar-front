@@ -76,7 +76,7 @@ export function CreateClothesForm() {
     startTransition(async () => {
       const serverData = {
         name: values.name,
-        description: values.description,
+        ...(values.description ? { description: values.description } : {}),
         price: values.price,
         variants: values.variants,
         images: values.images.map(img => ({
@@ -210,6 +210,7 @@ export function CreateClothesForm() {
                         <Textarea
                           placeholder='Describe las características, materiales, colores disponibles...'
                           className='min-h-[120px] resize-none'
+                          maxLength={1024}
                           {...field}
                         />
                       </FormControl>
@@ -229,7 +230,8 @@ export function CreateClothesForm() {
                           <CircleDollarSign className='text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2' />
                           <Input
                             type='number'
-                            min={0}
+                            min={1}
+                            max={1000}
                             step={0.01}
                             placeholder='0.00'
                             className='pl-10 text-base font-medium'

@@ -1,116 +1,59 @@
 # Telar Frontend
 
-Frontend de Telar, construido con Next.js (App Router), Shadcn UI, Tailwind CSS,
-TypeScript y autenticación directa con AWS Cognito.
+Telar is an administrative web application for garment manufacturers. It manages
+employees, customers, clothes, quotations, and production orders.
 
-## Requisitos
+The app is a static Next.js frontend. Business operations call an external API
+directly, while authentication uses Amazon Cognito from the browser.
 
-- **Node.js**: >= 20 (Recomendado Node.js 22)
-- **pnpm**: Administrador de paquetes recomendado
+## Requirements
 
-## Levantamiento En Local
+- Node.js 20+ (Node.js 22 recommended)
+- pnpm
 
-1. Instala las dependencias:
+## Local Development
 
-   ```bash
-   pnpm install
-   ```
+```bash
+pnpm install
+cp .env.example .env.local
+```
 
-2. Crea el archivo de entorno local:
+Configure `.env.local`:
 
-   ```bash
-   cp .env.example .env.local
-   ```
+```env
+NEXT_PUBLIC_API_URL=http://localhost:5000/api/v1
+NEXT_PUBLIC_AWS_COGNITO_REGION=us-east-1
+NEXT_PUBLIC_AWS_COGNITO_CLIENT_ID=your_cognito_client_id
+NEXT_PUBLIC_AWS_COGNITO_ENDPOINT=http://localhost:9229
+ASSETS_HOSTNAME=
+```
 
-3. Configura `.env.local` con tus valores locales o los valores entregados por
-   la infraestructura.
+`NEXT_PUBLIC_AWS_COGNITO_ENDPOINT` is optional. Set it only when using a local
+Cognito-compatible service; omit it to use the regional AWS Cognito endpoint.
 
-4. Inicia la aplicación en modo desarrollo:
+Start the development server:
 
-   ```bash
-   pnpm dev
-   ```
+```bash
+pnpm dev
+```
 
-   La aplicación frontend quedará disponible en:
-   [http://localhost:3002](http://localhost:3002)
+Open [http://localhost:3002](http://localhost:3002).
 
-## Variables de Entorno
+## Commands
 
-El frontend requiere las siguientes variables de entorno para funcionar:
+```bash
+pnpm test
+pnpm exec tsc --noEmit
+pnpm run lint
+pnpm run build
+```
 
-- `NEXT_PUBLIC_API_URL`: URL base de la API, incluyendo el prefijo de versión
-  (ej. `https://api.example.com/api/v1`).
-- `NEXT_PUBLIC_AWS_COGNITO_REGION`: Región del pool de usuarios de AWS Cognito
-  (ej. `us-east-1`).
-- `NEXT_PUBLIC_AWS_COGNITO_CLIENT_ID`: ID del cliente de la aplicación en
-  Cognito.
-- `ASSETS_HOSTNAME`: Solo el hostname del servidor/CDN de recursos de imágenes
-  (ej. `assets.example.com` o `d123abcxyz.cloudfront.net`), sin protocolo.
+## Static Deployment
 
-## Tests
+`pnpm run build` generates the static site in `out/`. Upload the contents of
+that directory to static hosting such as S3 + CloudFront.
 
-Los tests de componentes y lógica unitaria se ejecutan usando Jest y React
-Testing Library:
-
-- Ejecutar tests:
-
-  ```bash
-  pnpm test
-  ```
-
-- Ejecutar tests en modo de observación (watch mode):
-  ```bash
-  pnpm test:watch
-  ```
-
-## Rutas y Export Estático
-
-Este frontend está configurado para generar un artefacto de **exportación
-estática** (`output: 'export'` en `next.config.ts`), lo que permite que sea
-desplegado sin necesidad de un servidor Node.js en ejecución.
-
-## Validaciones y Formato
-
-Antes de realizar confirmaciones de código, asegúrate de correr las validaciones
-locales:
-
-- Chequeo de tipos estáticos (TypeScript):
-
-  ```bash
-  pnpm exec tsc --noEmit
-  ```
-
-- Analizar el código (ESLint):
-
-  ```bash
-  pnpm run lint
-  ```
-
-- Corregir errores automáticos de linting:
-
-  ```bash
-  pnpm run lint:fix
-  ```
-
-- Formatear el código con Prettier:
-  ```bash
-  pnpm run format
-  ```
-
-## Despliegue
-
-### Hosting Estático (AWS S3 + CloudFront)
-
-1. Genera el build de producción:
-   ```bash
-   pnpm run build
-   ```
-2. Sube el contenido del directorio **`out/`** (no de `.next/`) al bucket S3 y
-   limpia el caché del CDN de CloudFront.
-
-### Probar el Build Estático en Local
-
-Para verificar que el export estático funciona correctamente antes de subirlo:
+Test the exported site locally with:
 
 ```bash
 pnpx serve@latest out

@@ -29,7 +29,7 @@ import type {
 
 interface CreateClothesData {
   name: string
-  description: string
+  description?: string
   price: number
   variants: CreateClothesVariantInput[]
   images: CreateClothesImageInput[]

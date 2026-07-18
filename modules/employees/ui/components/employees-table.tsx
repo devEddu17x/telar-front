@@ -114,9 +114,9 @@ export function EmployeesTable({
   }
 
   function getRoleLabel(role: Role): string {
-    if (role === 'owner') return 'Owner'
-    if (role === 'admin') return 'Admin'
-    return 'Seller'
+    if (role === 'owner') return 'Dueño'
+    if (role === 'admin') return 'Administrador'
+    return 'Vendedor'
   }
 
   function formatDate(dateString: string) {

@@ -587,7 +587,7 @@ function QuantityInput({
         const raw = e.target.value.replace(/[^0-9]/g, '')
         setLocalValue(raw)
         const num = parseInt(raw)
-        if (!isNaN(num) && num >= 1) {
+        if (!isNaN(num) && num >= 1 && num <= 100000) {
           onChange(num)
         }
       }}
@@ -596,6 +596,9 @@ function QuantityInput({
         if (isNaN(num) || num < 1) {
           setLocalValue('1')
           onChange(1)
+        } else if (num > 100000) {
+          setLocalValue('100000')
+          onChange(100000)
         }
       }}
     />

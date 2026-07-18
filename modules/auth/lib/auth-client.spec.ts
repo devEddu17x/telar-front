@@ -2,7 +2,7 @@ import { CognitoIdentityProviderClient } from '@aws-sdk/client-cognito-identity-
 
 import { apiRequest } from '@/lib/api/client'
 
-import { signInClient, signUpClient } from './auth-client'
+import { signInClient, signUpClient, tenantSetupClient } from './auth-client'
 import { saveClientSession } from './session-client'
 
 jest.mock('@/lib/api/client', () => ({
@@ -21,6 +21,8 @@ jest.mock('@/lib/api/client', () => ({
 jest.mock('./session-client', () => ({
   saveClientSession: jest.fn(),
   clearClientSession: jest.fn(),
+  getClientRefreshToken: jest.fn().mockReturnValue(null),
+  getFreshClientIdToken: jest.fn().mockResolvedValue('fake-id-token'),
   getRedirectPathFromToken: jest.fn().mockReturnValue('/admin')
 }))
 
@@ -124,6 +126,26 @@ describe('auth-client', () => {
       expect(response.success).toBe(true)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       expect((response as any).data.redirectTo).toBe('/admin')
+    })
+  })
+
+  describe('tenantSetupClient', () => {
+    it('omite el RUC vacío del payload', async () => {
+      ;(apiRequest as jest.Mock).mockResolvedValueOnce({ success: true })
+
+      await tenantSetupClient({
+        name: 'Textilería Telar',
+        ruc: '',
+        address: ''
+      })
+
+      expect(apiRequest).toHaveBeenCalledWith('/tenant/setup', {
+        method: 'POST',
+        token: 'fake-id-token',
+        body: {
+          name: 'Textilería Telar'
+        }
+      })
     })
   })
 })
