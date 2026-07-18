@@ -1,6 +1,9 @@
+import Image from 'next/image'
 import Link from 'next/link'
 
 import { ArrowRightIcon, LogInIcon, UserPlusIcon } from 'lucide-react'
+
+import telarLogo from './telar.webp'
 
 export const metadata = {
   title: 'Bienvenido a Telar',
@@ -13,9 +16,12 @@ export default function Home() {
     <div className='min-h-svh bg-[#faf9f8] text-[#1a1c1c]'>
       <header className='fixed top-0 z-50 w-full bg-[#faf9f8]/85 backdrop-blur-lg'>
         <div className='mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-4'>
-          <div className='text-2xl font-black tracking-tight text-[#2b1608]'>
-            Telar
-          </div>
+          <Image
+            src={telarLogo}
+            alt='Telar'
+            priority
+            className='h-9 w-auto mix-blend-multiply'
+          />
         </div>
       </header>
 
@@ -24,8 +30,14 @@ export default function Home() {
         <div className='pointer-events-none absolute bottom-[-10%] left-[-5%] h-[30rem] w-[30rem] rounded-full bg-[#765846]/10 blur-[100px]' />
 
         <section className='mb-16 max-w-4xl text-center'>
-          <h1 className='text-5xl leading-tight font-extrabold tracking-tight text-[#2b1608] md:text-7xl'>
-            Bienvenido a Telar
+          <h1 className='flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-5xl leading-tight font-semibold tracking-tight text-[#2b1608] md:text-7xl'>
+            <span>Bienvenido a</span>
+            <Image
+              src={telarLogo}
+              alt='Telar'
+              priority
+              className='h-16 w-auto mix-blend-multiply md:h-24'
+            />
           </h1>
           <p className='mx-auto mt-5 max-w-2xl text-base leading-relaxed text-[#50453f] md:text-lg'>
             Gestiona operaciones, personal y ventas desde una experiencia clara,

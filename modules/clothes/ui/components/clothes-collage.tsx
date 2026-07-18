@@ -119,7 +119,7 @@ export function ClothesCollage({
                 <ImageOff className='text-muted-foreground h-6 w-6' />
               </div>
             )}
-            <div className='absolute right-0 bottom-0 left-0 bg-black/70 px-2 py-1.5 text-white'>
+            <div className='bg-primary/88 text-primary-foreground absolute right-0 bottom-0 left-0 px-2 py-1.5'>
               <p className='truncate text-xs font-medium'>{item.name}</p>
               <p className='text-xs text-white/80'>
                 S/ {Number(item.price).toFixed(2)}

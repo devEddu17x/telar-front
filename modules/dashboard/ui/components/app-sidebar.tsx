@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 
@@ -44,6 +45,8 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem
 } from '@/components/ui/sidebar'
+
+import telarLogo from '@/app/telar.webp'
 
 interface NavItem {
   title: string
@@ -174,12 +177,14 @@ export function AppSidebar({ user }: AppSidebarProps) {
   return (
     <ClientOnly>
       <Sidebar>
-        <SidebarHeader className='border-b p-4'>
-          <Link href='/' className='flex items-center gap-2'>
-            <div className='bg-primary text-primary-foreground flex h-8 w-8 items-center justify-center rounded-md text-sm font-bold'>
-              D
-            </div>
-            <span className='text-lg font-semibold'>TELAR</span>
+        <SidebarHeader className='border-sidebar-border/80 bg-sidebar border-b px-4 py-3'>
+          <Link href='/' className='flex w-full justify-center'>
+            <Image
+              src={telarLogo}
+              alt='Telar'
+              priority
+              className='h-14 w-auto object-contain'
+            />
           </Link>
         </SidebarHeader>
 

@@ -1,0 +1,32 @@
+import type { Metadata } from 'next'
+import { Nunito } from 'next/font/google'
+
+import { Toaster } from '@/components/ui/sonner'
+
+import '@/styles/globals.css'
+
+const nunito = Nunito({
+  variable: '--font-nunito',
+  subsets: ['latin'],
+  weight: ['400', '600', '700']
+})
+
+export const metadata: Metadata = {
+  title: 'Telar App',
+  description: 'Gestiona tu negocio.'
+}
+
+export default function RootLayout({
+  children
+}: Readonly<{
+  children: React.ReactNode
+}>) {
+  return (
+    <html lang='es'>
+      <body className={`${nunito.className} antialiased`}>
+        {children}
+        <Toaster richColors />
+      </body>
+    </html>
+  )
+}
