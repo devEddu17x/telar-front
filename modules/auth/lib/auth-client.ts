@@ -43,7 +43,8 @@ import {
 } from './session-client'
 
 const cognitoClient = new CognitoIdentityProviderClient({
-  region: COGNITO.REGION
+  region: COGNITO.REGION,
+  ...(COGNITO.ENDPOINT ? { endpoint: COGNITO.ENDPOINT } : {})
 })
 
 function firstValidationError(error: { issues: Array<{ message: string }> }) {
@@ -331,6 +332,7 @@ export async function tenantSetupClient(
     return { success: false, error: firstValidationError(validated.error) }
   }
 
+  const { ruc, address, ...tenantData } = validated.data
   const idToken = await getFreshClientIdToken()
   const refreshToken = getClientRefreshToken()
 
@@ -342,7 +344,11 @@ export async function tenantSetupClient(
     await apiRequest('/tenant/setup', {
       method: 'POST',
       token: idToken,
-      body: validated.data
+      body: {
+        ...tenantData,
+        ...(ruc ? { ruc } : {}),
+        ...(address ? { address } : {})
+      }
     })
 
     if (refreshToken) {
