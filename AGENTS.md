@@ -50,17 +50,16 @@ ASSETS_HOSTNAME=
 No usar `NEXT_PUBLIC_AWS_COGNITO_APP_CLIENT_ID`; el nombre valido es
 `NEXT_PUBLIC_AWS_COGNITO_CLIENT_ID`.
 
-`NEXT_PUBLIC_AWS_COGNITO_ENDPOINT` es opcional y se usa solo en desarrollo
-local para apuntar a un emulador compatible, por ejemplo
-`http://localhost:9229`. Si esta vacia o no existe, el SDK usa Cognito AWS de
-la region configurada.
+`NEXT_PUBLIC_AWS_COGNITO_ENDPOINT` es opcional y se usa solo en desarrollo local
+para apuntar a un emulador compatible, por ejemplo `http://localhost:9229`. Si
+esta vacia o no existe, el SDK usa Cognito AWS de la region configurada.
 
 Para el stack local, el frontend normalmente apunta a una API local y Cognito
 Local en `http://localhost:9229`. Las credenciales AWS de emuladores y tokens
-internos son solo del backend: nunca exponerlos con prefijo `NEXT_PUBLIC_`.
-Las subidas con URLs firmadas salen desde el navegador; el storage local o
-remoto debe permitir CORS desde el origen del frontend (`http://localhost:3002`
-en desarrollo).
+internos son solo del backend: nunca exponerlos con prefijo `NEXT_PUBLIC_`. Las
+subidas con URLs firmadas salen desde el navegador; el storage local o remoto
+debe permitir CORS desde el origen del frontend (`http://localhost:3002` en
+desarrollo).
 
 `ASSETS_HOSTNAME` debe ser solo el hostname, sin protocolo. Ejemplos:
 
