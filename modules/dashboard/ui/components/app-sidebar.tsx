@@ -187,7 +187,7 @@ export function AppSidebar({ user }: AppSidebarProps) {
           {navGroups.map(group => (
             <Collapsible
               key={group.title}
-              defaultOpen={isGroupActive(group)}
+              defaultOpen={group.title === 'Gestión' || isGroupActive(group)}
               className='group/collapsible'
             >
               <SidebarGroup>
