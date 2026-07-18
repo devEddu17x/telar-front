@@ -144,8 +144,11 @@ export function EditClothesForm({ clothes, onUpdated }: EditClothesFormProps) {
                       <div className='relative'>
                         <CircleDollarSign className='text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2' />
                         <Input
-                          type='text'
+                          type='number'
                           inputMode='decimal'
+                          min={1}
+                          max={1000}
+                          step={0.01}
                           placeholder='0.00'
                           className='pl-10 text-base font-medium'
                           value={field.value ?? ''}
@@ -182,6 +185,7 @@ export function EditClothesForm({ clothes, onUpdated }: EditClothesFormProps) {
                     <Textarea
                       placeholder='Describe las características, materiales, colores disponibles...'
                       className='min-h-[120px] resize-none'
+                      maxLength={1024}
                       {...field}
                     />
                   </FormControl>

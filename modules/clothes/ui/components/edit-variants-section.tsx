@@ -319,6 +319,7 @@ export function EditVariantsSection({
                               <Input
                                 type='number'
                                 min={0}
+                                max={1000}
                                 step={0.01}
                                 placeholder='0.00'
                                 className='pl-9'
@@ -421,6 +422,7 @@ export function EditVariantsSection({
                             <Input
                               type='number'
                               min={0}
+                              max={1000}
                               step={0.01}
                               className='h-9 pl-9'
                               value={editValue}
