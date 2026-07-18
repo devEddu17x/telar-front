@@ -47,8 +47,7 @@ describe('clothes schemas', () => {
       createClothesSchema.safeParse({ ...validClothes, price: 0 }).success
     ).toBe(false)
     expect(
-      createClothesSchema.safeParse({ ...validClothes, price: 1000.01 })
-        .success
+      createClothesSchema.safeParse({ ...validClothes, price: 1000.01 }).success
     ).toBe(false)
   })
 

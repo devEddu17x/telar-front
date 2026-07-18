@@ -188,7 +188,9 @@ export function CreateOrderDialog({
                       />
                     </PopoverContent>
                   </Popover>
-                  <FormDescription>No se permiten fechas pasadas</FormDescription>
+                  <FormDescription>
+                    No se permiten fechas pasadas
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

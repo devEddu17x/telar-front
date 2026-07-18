@@ -1,7 +1,4 @@
-import {
-  customizationSchema,
-  quotationDetailSchema
-} from './schemas'
+import { customizationSchema, quotationDetailSchema } from './schemas'
 
 const validDetail = {
   clothesVariantId: '123e4567-e89b-12d3-a456-426614174001',
@@ -30,9 +27,9 @@ describe('quotation schemas', () => {
     expect(
       customizationSchema.safeParse({ name: 'a'.repeat(101) }).success
     ).toBe(false)
-    expect(
-      customizationSchema.safeParse({ number: 100.01 }).success
-    ).toBe(false)
+    expect(customizationSchema.safeParse({ number: 100.01 }).success).toBe(
+      false
+    )
     expect(
       customizationSchema.safeParse({ notes: 'a'.repeat(1025) }).success
     ).toBe(false)

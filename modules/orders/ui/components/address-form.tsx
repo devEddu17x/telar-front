@@ -29,7 +29,11 @@ export function AddressForm() {
             <FormItem>
               <FormLabel>Departamento</FormLabel>
               <FormControl>
-                <Input placeholder='Ej: La Libertad' maxLength={100} {...field} />
+                <Input
+                  placeholder='Ej: La Libertad'
+                  maxLength={100}
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

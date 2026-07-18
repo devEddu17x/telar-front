@@ -1,10 +1,6 @@
 import { z } from 'zod'
 
-const optionalTextSchema = (
-  min: number,
-  max: number,
-  fieldName: string
-) =>
+const optionalTextSchema = (min: number, max: number, fieldName: string) =>
   z
     .string()
     .optional()

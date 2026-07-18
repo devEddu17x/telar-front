@@ -87,7 +87,9 @@ export function ClothesCollage({
   if (clothes.length === 0) {
     return (
       <div className='flex min-h-48 items-center justify-center'>
-        <p className='text-muted-foreground text-sm'>No hay prendas registradas</p>
+        <p className='text-muted-foreground text-sm'>
+          No hay prendas registradas
+        </p>
       </div>
     )
   }
