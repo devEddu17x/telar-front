@@ -124,7 +124,7 @@ export function ProfilePageClient() {
           <div className='bg-primary text-primary-foreground border-background flex h-28 w-28 items-center justify-center rounded-2xl border-4 text-3xl font-bold shadow-lg'>
             {initials}
           </div>
-          <div className='mb-2'>
+          <div className='mb-0.5'>
             <h1 className='text-2xl font-bold tracking-tight'>{fullName}</h1>
             <p className='text-muted-foreground text-sm'>{employee.email}</p>
           </div>
