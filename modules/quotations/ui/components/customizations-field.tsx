@@ -33,8 +33,10 @@ export function CustomizationsField({
   })
 
   const handleAddCustomization = () => {
-    append({ name: '', number: 0, notes: '' })
+    append({})
   }
+
+  const maxCustomizations = Math.min(quantity, 100)
 
   return (
     <div className='space-y-3'>
@@ -43,7 +45,7 @@ export function CustomizationsField({
           Personalizaciones (opcional)
         </span>
         <Badge variant='secondary'>
-          {fields.length} de {quantity}
+          {fields.length} de {maxCustomizations}
         </Badge>
       </div>
 
@@ -72,7 +74,12 @@ export function CustomizationsField({
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Input placeholder='Nombre' {...field} />
+                        <Input
+                          placeholder='Nombre'
+                          maxLength={100}
+                          {...field}
+                          value={field.value ?? ''}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -88,11 +95,18 @@ export function CustomizationsField({
                           type='number'
                           placeholder='Número'
                           min={0}
+                          max={100}
+                          step={1}
                           {...field}
-                          value={field.value === 0 ? '' : field.value}
+                          value={field.value ?? ''}
+                          onFocus={() => {
+                            if (field.value === 0) field.onChange(undefined)
+                          }}
                           onChange={e => {
                             const val = e.target.value
-                            field.onChange(val === '' ? 0 : parseInt(val))
+                            field.onChange(
+                              val === '' ? undefined : parseFloat(val)
+                            )
                           }}
                         />
                       </FormControl>
@@ -109,6 +123,7 @@ export function CustomizationsField({
                     <FormControl>
                       <Input
                         placeholder='Notas (opcional)'
+                        maxLength={1024}
                         {...field}
                         value={field.value || ''}
                       />
@@ -122,7 +137,7 @@ export function CustomizationsField({
         </div>
       )}
 
-      {fields.length < quantity && (
+      {fields.length < maxCustomizations && (
         <Button
           type='button'
           variant='outline'
