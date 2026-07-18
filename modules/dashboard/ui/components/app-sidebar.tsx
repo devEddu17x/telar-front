@@ -1,7 +1,7 @@
 'use client'
 
-import Link from 'next/link'
 import Image from 'next/image'
+import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 
 import {
@@ -20,7 +20,6 @@ import {
 
 import { signOutClient } from '@/modules/auth/lib/auth-client'
 import type { Role } from '@/modules/auth/types'
-import telarLogo from '@/app/telar.webp'
 
 import { ClientOnly } from '@/components/client-only'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
@@ -46,6 +45,8 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem
 } from '@/components/ui/sidebar'
+
+import telarLogo from '@/app/telar.webp'
 
 interface NavItem {
   title: string
