@@ -1,7 +1,7 @@
 # Telar Frontend
 
-Telar is an administrative web application for garment manufacturers. It
-manages employees, customers, clothes, quotations, and production orders.
+Telar is an administrative web application for garment manufacturers. It manages
+employees, customers, clothes, quotations, and production orders.
 
 The app is a static Next.js frontend. Business operations call an external API
 directly, while authentication uses Amazon Cognito from the browser.
