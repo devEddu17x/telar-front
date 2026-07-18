@@ -1,0 +1,1633 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/v1/health": {
+      "get": {
+        "operationId": "AppController_healthCheck",
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": { "schema": { "type": "string" } }
+            }
+          }
+        },
+        "summary": "Check if the application is running",
+        "tags": ["App"]
+      }
+    },
+    "/api/v1/auth/register": {
+      "post": {
+        "operationId": "AuthController_register",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateOwnerDTO" }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/EmployeeEntity" }
+              }
+            }
+          }
+        },
+        "summary": "Register a new owner",
+        "tags": ["Auth"]
+      }
+    },
+    "/api/v1/auth/confirm-email": {
+      "post": {
+        "operationId": "AuthController_confirmEmail",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ConfirmEmailDTO" }
+            }
+          }
+        },
+        "responses": { "default": { "description": "" } },
+        "summary": "Confirm user email",
+        "tags": ["Auth"]
+      }
+    },
+    "/api/v1/auth/resend-code": {
+      "post": {
+        "operationId": "AuthController_resendConfirmationCode",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ResendCodeDTO" }
+            }
+          }
+        },
+        "responses": { "default": { "description": "" } },
+        "summary": "Resend confirmation code",
+        "tags": ["Auth"]
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "operationId": "AuthController_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/LoginDTO" }
+            }
+          }
+        },
+        "responses": { "default": { "description": "" } },
+        "summary": "Login with email and password",
+        "tags": ["Auth"]
+      }
+    },
+    "/api/v1/employees/me": {
+      "get": {
+        "operationId": "EmployeeController_getEmployee",
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": { "schema": { "type": "object" } }
+            }
+          }
+        },
+        "summary": "Get current employee profile and roles",
+        "tags": ["Employee"]
+      }
+    },
+    "/api/v1/employees": {
+      "patch": {
+        "operationId": "EmployeeController_updateEmployee",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateEmployeeDTO" }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/EmployeeEntity" }
+              }
+            }
+          }
+        },
+        "summary": "Update current employee profile",
+        "tags": ["Employee"]
+      }
+    },
+    "/api/v1/customers": {
+      "post": {
+        "operationId": "CustomerController_createCustomer",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateCustomerDTO" }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CustomerEntity" }
+              }
+            }
+          }
+        },
+        "summary": "Create a new customer",
+        "tags": ["Customer"]
+      },
+      "get": {
+        "operationId": "CustomerController_getAllCustomers",
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/CustomerEntity" }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get all customers for tenant",
+        "tags": ["Customer"]
+      }
+    },
+    "/api/v1/customers/search": {
+      "get": {
+        "operationId": "CustomerController_searchCustomers",
+        "parameters": [
+          {
+            "name": "names",
+            "required": false,
+            "in": "query",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "lastnames",
+            "required": false,
+            "in": "query",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "phone",
+            "required": false,
+            "in": "query",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/CustomerEntity" }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Search customers by filters",
+        "tags": ["Customer"]
+      }
+    },
+    "/api/v1/customers/{id}": {
+      "patch": {
+        "operationId": "CustomerController_updateCustomer",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateCustomerDTO" }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CustomerEntity" }
+              }
+            }
+          }
+        },
+        "summary": "Update customer by ID",
+        "tags": ["Customer"]
+      }
+    },
+    "/api/v1/clothes": {
+      "post": {
+        "operationId": "ClothesController_createClothes",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateClothesDTO" }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": { "schema": { "type": "object" } }
+            }
+          }
+        },
+        "summary": "Create clothes with images and variants",
+        "tags": ["Clothes"]
+      },
+      "get": {
+        "operationId": "ClothesController_getAllClothes",
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": { "schema": { "type": "object" } }
+            }
+          }
+        },
+        "summary": "Get all clothes for tenant",
+        "tags": ["Clothes"]
+      }
+    },
+    "/api/v1/clothes/quick-create": {
+      "post": {
+        "operationId": "ClothesController_createDraftClothes",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateDraftClothesDTO" }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": { "schema": { "type": "object" } }
+            }
+          }
+        },
+        "summary": "Create draft clothes",
+        "tags": ["Clothes"]
+      }
+    },
+    "/api/v1/clothes/search": {
+      "get": {
+        "operationId": "ClothesController_searchAndFilterClothes",
+        "parameters": [
+          {
+            "name": "name",
+            "required": false,
+            "in": "query",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "description",
+            "required": false,
+            "in": "query",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "size",
+            "required": false,
+            "in": "query",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "gender",
+            "required": false,
+            "in": "query",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": { "schema": { "type": "object" } }
+            }
+          }
+        },
+        "summary": "Search and filter clothes",
+        "tags": ["Clothes"]
+      }
+    },
+    "/api/v1/clothes/{id}": {
+      "get": {
+        "operationId": "ClothesController_getClothesById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": { "schema": { "type": "object" } }
+            }
+          }
+        },
+        "summary": "Get clothes by ID",
+        "tags": ["Clothes"]
+      },
+      "patch": {
+        "operationId": "ClothesController_updateClothes",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateClothesDTO" }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": { "schema": { "type": "object" } }
+            }
+          }
+        },
+        "summary": "Update clothes by ID",
+        "tags": ["Clothes"]
+      },
+      "delete": {
+        "operationId": "ClothesController_deleteClothes",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": { "default": { "description": "" } },
+        "summary": "Delete clothes by ID",
+        "tags": ["Clothes"]
+      }
+    },
+    "/api/v1/clothes/{id}/variants": {
+      "post": {
+        "operationId": "ClothesController_addVariant",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Variant" }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": { "schema": { "type": "object" } }
+            }
+          }
+        },
+        "summary": "Add variant to clothes",
+        "tags": ["Clothes"]
+      }
+    },
+    "/api/v1/clothes/{id}/variants/{variantId}": {
+      "patch": {
+        "operationId": "ClothesController_updateVariant",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "variantId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateVariantDTO" }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": { "schema": { "type": "object" } }
+            }
+          }
+        },
+        "summary": "Update clothes variant",
+        "tags": ["Clothes"]
+      },
+      "delete": {
+        "operationId": "ClothesController_deleteVariant",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "variantId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": { "schema": { "type": "object" } }
+            }
+          }
+        },
+        "summary": "Delete clothes variant",
+        "tags": ["Clothes"]
+      }
+    },
+    "/api/v1/clothes/{id}/images": {
+      "post": {
+        "operationId": "ClothesController_addImages",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AddImagesToClothesDTO" }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": { "schema": { "type": "object" } }
+            }
+          }
+        },
+        "summary": "Add images to clothes",
+        "tags": ["Clothes"]
+      },
+      "delete": {
+        "operationId": "ClothesController_deleteImage",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/DeleteImageDTO" }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": { "schema": { "type": "object" } }
+            }
+          }
+        },
+        "summary": "Delete image from clothes",
+        "tags": ["Clothes"]
+      }
+    },
+    "/api/v1/admin/roles": {
+      "get": {
+        "operationId": "AdminController_getAllRoles",
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "type": "object" } }
+              }
+            }
+          }
+        },
+        "summary": "Get all available roles can set to an user",
+        "tags": ["Admin"]
+      }
+    },
+    "/api/v1/admin/employees/promote": {
+      "patch": {
+        "operationId": "AdminController_promoteEmployeeRole",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/EmployeeRoleUpdateDTO" }
+            }
+          }
+        },
+        "responses": { "default": { "description": "" } },
+        "summary": "Promote employee role",
+        "tags": ["Admin"]
+      }
+    },
+    "/api/v1/admin/employees/revoke": {
+      "patch": {
+        "operationId": "AdminController_revokeEmployeeRole",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/EmployeeRoleUpdateDTO" }
+            }
+          }
+        },
+        "responses": { "default": { "description": "" } },
+        "summary": "Revoke employee role",
+        "tags": ["Admin"]
+      }
+    },
+    "/api/v1/admin/employees": {
+      "post": {
+        "operationId": "AdminController_createEmployee",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateEmployeeDTO" }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/EmployeeEntity" }
+              }
+            }
+          }
+        },
+        "summary": "Create employee for owner tenant",
+        "tags": ["Admin"]
+      },
+      "get": {
+        "operationId": "AdminController_getAllEmployees",
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "type": "object" } }
+              }
+            }
+          }
+        },
+        "summary": "Get all employees for tenant",
+        "tags": ["Admin"]
+      }
+    },
+    "/api/v1/admin/employees/{id}": {
+      "delete": {
+        "operationId": "AdminController_deleteEmployee",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": { "default": { "description": "" } },
+        "summary": "Delete employee by id",
+        "tags": ["Admin"]
+      }
+    },
+    "/api/v1/admin/employees/{id}/reactivate": {
+      "post": {
+        "operationId": "AdminController_reactivateEmployee",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": { "default": { "description": "" } },
+        "summary": "Reactivate employee by id",
+        "tags": ["Admin"]
+      }
+    },
+    "/api/v1/quotes": {
+      "post": {
+        "operationId": "QuoteController_createQuote",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateQuoteDTO" }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": { "schema": { "type": "object" } }
+            }
+          }
+        },
+        "summary": "Create a new quote",
+        "tags": ["Quote"]
+      },
+      "get": {
+        "operationId": "QuoteController_getQuotes",
+        "parameters": [
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "type": "object" } }
+              }
+            }
+          }
+        },
+        "summary": "Get all quotes for tenant, optionally filtered by status",
+        "tags": ["Quote"]
+      }
+    },
+    "/api/v1/quotes/{id}": {
+      "get": {
+        "operationId": "QuoteController_getQuoteById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/QuoteEntity" }
+              }
+            }
+          }
+        },
+        "summary": "Get quote by ID",
+        "tags": ["Quote"]
+      },
+      "put": {
+        "operationId": "QuoteController_updateQuote",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateQuoteDTO" }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": { "schema": { "type": "object" } }
+            }
+          }
+        },
+        "summary": "Update quote by ID",
+        "tags": ["Quote"]
+      },
+      "delete": {
+        "operationId": "QuoteController_deleteQuote",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": { "default": { "description": "" } },
+        "summary": "Delete quote by ID",
+        "tags": ["Quote"]
+      }
+    },
+    "/api/v1/quotes/{id}/cancel": {
+      "patch": {
+        "operationId": "QuoteController_cancelQuote",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/QuoteEntity" }
+              }
+            }
+          }
+        },
+        "summary": "Cancel quote by ID",
+        "tags": ["Quote"]
+      }
+    },
+    "/api/v1/orders": {
+      "post": {
+        "operationId": "OrderController_createOrder",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateOrderDTO" }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/OrderEntity" }
+              }
+            }
+          }
+        },
+        "summary": "Create a new order",
+        "tags": ["Order"]
+      },
+      "get": {
+        "operationId": "OrderController_getOrders",
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "type": "object" } }
+              }
+            }
+          }
+        },
+        "summary": "Get all orders for tenant",
+        "tags": ["Order"]
+      }
+    },
+    "/api/v1/orders/{id}": {
+      "get": {
+        "operationId": "OrderController_getOrderById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/OrderEntity" }
+              }
+            }
+          }
+        },
+        "summary": "Get order by ID",
+        "tags": ["Order"]
+      },
+      "patch": {
+        "operationId": "OrderController_updateOrderStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateOrderDTO" }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": { "schema": { "type": "object" } }
+            }
+          }
+        },
+        "summary": "Update order status by ID",
+        "tags": ["Order"]
+      },
+      "delete": {
+        "operationId": "OrderController_deleteOrder",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": { "default": { "description": "" } },
+        "summary": "Delete order by ID",
+        "tags": ["Order"]
+      }
+    },
+    "/api/v1/orders/{id}/cancel": {
+      "patch": {
+        "operationId": "OrderController_cancelOrder",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CancelOrderDTO" }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/OrderEntity" }
+              }
+            }
+          }
+        },
+        "summary": "Cancel order by ID",
+        "tags": ["Order"]
+      }
+    },
+    "/api/v1/tenant/setup": {
+      "post": {
+        "operationId": "TenantController_setupTenant",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateTenantDto" }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TenantEntity" }
+              }
+            }
+          }
+        },
+        "summary": "Setup a new tenant",
+        "tags": ["Tenant"]
+      }
+    },
+    "/api/v1/tenant/{id}": {
+      "get": {
+        "operationId": "TenantController_getTenant",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TenantEntity" }
+              }
+            }
+          }
+        },
+        "summary": "Get tenant information by ID",
+        "tags": ["Tenant"]
+      }
+    }
+  },
+  "info": {
+    "title": "Telar API",
+    "description": "API documentation for the Telar application",
+    "version": "1.0.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": { "scheme": "bearer", "bearerFormat": "JWT", "type": "http" }
+    },
+    "schemas": {
+      "CreateOwnerDTO": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "maxLength": 64 },
+          "lastName": { "type": "string", "maxLength": 64 },
+          "email": { "type": "string", "maxLength": 64, "format": "email" },
+          "password": {
+            "type": "string",
+            "minLength": 12,
+            "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[\\W_]).{12,}$"
+          }
+        },
+        "required": ["name", "lastName", "email", "password"]
+      },
+      "TenantEntity": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "ruc": { "type": "string" },
+          "address": { "type": "string" },
+          "createdAt": { "format": "date-time", "type": "string" },
+          "updatedAt": { "format": "date-time", "type": "string" }
+        },
+        "required": ["id", "name", "ruc", "address", "createdAt", "updatedAt"]
+      },
+      "EmployeeEntity": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "sub": { "type": "string" },
+          "names": { "type": "string" },
+          "lastNames": { "type": "string" },
+          "email": { "type": "string" },
+          "isActive": { "type": "boolean" },
+          "tenantId": { "type": "string" },
+          "tenant": { "$ref": "#/components/schemas/TenantEntity" },
+          "createdAt": { "format": "date-time", "type": "string" },
+          "updatedAt": { "format": "date-time", "type": "string" }
+        },
+        "required": [
+          "id",
+          "sub",
+          "names",
+          "lastNames",
+          "email",
+          "isActive",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "ConfirmEmailDTO": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string", "format": "email" },
+          "code": { "type": "string", "minLength": 6, "maxLength": 6 }
+        },
+        "required": ["email", "code"]
+      },
+      "ResendCodeDTO": {
+        "type": "object",
+        "properties": { "email": { "type": "string", "format": "email" } },
+        "required": ["email"]
+      },
+      "LoginDTO": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string", "format": "email" },
+          "password": { "type": "string" }
+        },
+        "required": ["email", "password"]
+      },
+      "UpdateEmployeeDTO": {
+        "type": "object",
+        "properties": {
+          "names": { "type": "string", "maxLength": 64 },
+          "lastNames": { "type": "string", "maxLength": 64 }
+        }
+      },
+      "CreateCustomerDTO": {
+        "type": "object",
+        "properties": {
+          "names": { "type": "string", "maxLength": 100 },
+          "lastNames": { "type": "string", "maxLength": 100 },
+          "reference": { "type": "string", "maxLength": 100 },
+          "phone": {
+            "type": "string",
+            "minLength": 9,
+            "maxLength": 9,
+            "pattern": "^9\\d{8}$"
+          }
+        },
+        "required": ["names", "lastNames"]
+      },
+      "CustomerEntity": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "tenantId": { "type": "string" },
+          "tenant": { "$ref": "#/components/schemas/TenantEntity" },
+          "names": { "type": "string" },
+          "lastNames": { "type": "string" },
+          "reference": { "type": "string" },
+          "phone": { "type": "string" },
+          "email": { "type": "string" },
+          "isEcommerceUser": { "type": "boolean" },
+          "createdAt": { "format": "date-time", "type": "string" },
+          "updatedAt": { "format": "date-time", "type": "string" },
+          "quotes": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/QuoteEntity" }
+          }
+        },
+        "required": [
+          "id",
+          "tenantId",
+          "names",
+          "lastNames",
+          "reference",
+          "phone",
+          "email",
+          "isEcommerceUser",
+          "createdAt",
+          "updatedAt",
+          "quotes"
+        ]
+      },
+      "ClotheImageEntity": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "tenantId": { "type": "string" },
+          "url": { "type": "string" },
+          "clothesId": { "type": "string" },
+          "clothes": { "$ref": "#/components/schemas/ClothesEntity" }
+        },
+        "required": ["id", "tenantId", "url", "clothesId", "clothes"]
+      },
+      "ClothesEntity": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "tenantId": { "type": "string" },
+          "tenant": { "$ref": "#/components/schemas/TenantEntity" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "price": { "type": "number" },
+          "isInEcommerce": { "type": "boolean" },
+          "isDraft": { "type": "boolean" },
+          "createdAt": { "format": "date-time", "type": "string" },
+          "updatedAt": { "format": "date-time", "type": "string" },
+          "deletedAt": { "format": "date-time", "type": "string" },
+          "clothes_variant": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ClothesVariantEntity" }
+          },
+          "clothe_image": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ClotheImageEntity" }
+          }
+        },
+        "required": [
+          "id",
+          "tenantId",
+          "name",
+          "description",
+          "price",
+          "isInEcommerce",
+          "isDraft",
+          "createdAt",
+          "updatedAt",
+          "deletedAt",
+          "clothes_variant",
+          "clothe_image"
+        ]
+      },
+      "SizeEntity": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "size": {
+            "type": "string",
+            "enum": [
+              "2",
+              "4",
+              "6",
+              "8",
+              "10",
+              "12",
+              "14",
+              "16",
+              "XS",
+              "S",
+              "M",
+              "L",
+              "XL",
+              "XXL",
+              "XXXL"
+            ]
+          }
+        },
+        "required": ["id", "size"]
+      },
+      "GenderEntity": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "gender": { "type": "string", "enum": ["HOMBRE", "MUJER", "UNISEX"] }
+        },
+        "required": ["id", "gender"]
+      },
+      "ClothesVariantEntity": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "tenantId": { "type": "string" },
+          "clothesId": { "type": "string" },
+          "clothes": { "$ref": "#/components/schemas/ClothesEntity" },
+          "sizeId": { "type": "string" },
+          "size": { "$ref": "#/components/schemas/SizeEntity" },
+          "genderId": { "type": "string" },
+          "gender": { "$ref": "#/components/schemas/GenderEntity" },
+          "additional": { "type": "number" },
+          "quoteDetails": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/QuoteDetailEntity" }
+          }
+        },
+        "required": [
+          "id",
+          "tenantId",
+          "clothesId",
+          "clothes",
+          "sizeId",
+          "size",
+          "genderId",
+          "gender",
+          "additional",
+          "quoteDetails"
+        ]
+      },
+      "QuoteDetailEntity": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "tenantId": { "type": "string" },
+          "tenant": { "$ref": "#/components/schemas/TenantEntity" },
+          "unitPrice": { "type": "number" },
+          "quantity": { "type": "number" },
+          "customizations": { "type": "array", "items": { "type": "string" } },
+          "quoteId": { "type": "string" },
+          "quote": { "$ref": "#/components/schemas/QuoteEntity" },
+          "clothesVariantId": { "type": "string" },
+          "clothesVariant": {
+            "$ref": "#/components/schemas/ClothesVariantEntity"
+          }
+        },
+        "required": [
+          "id",
+          "tenantId",
+          "unitPrice",
+          "quantity",
+          "customizations",
+          "quoteId",
+          "quote",
+          "clothesVariantId",
+          "clothesVariant"
+        ]
+      },
+      "QuoteEntity": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "tenantId": { "type": "string" },
+          "tenant": { "$ref": "#/components/schemas/TenantEntity" },
+          "total": { "type": "number" },
+          "customerId": { "type": "string" },
+          "customer": { "$ref": "#/components/schemas/CustomerEntity" },
+          "status": {
+            "enum": ["PENDING", "APPROVED", "REJECTED", "CANCELLED"],
+            "type": "string"
+          },
+          "details": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/QuoteDetailEntity" }
+          },
+          "createdAt": { "format": "date-time", "type": "string" },
+          "updatedAt": { "format": "date-time", "type": "string" },
+          "deletedAt": { "format": "date-time", "type": "string" }
+        },
+        "required": [
+          "id",
+          "tenantId",
+          "total",
+          "customerId",
+          "customer",
+          "status",
+          "details",
+          "createdAt",
+          "updatedAt",
+          "deletedAt"
+        ]
+      },
+      "UpdateCustomerDTO": {
+        "type": "object",
+        "properties": {
+          "reference": { "type": "string", "maxLength": 100 },
+          "phone": {
+            "type": "string",
+            "minLength": 9,
+            "maxLength": 9,
+            "pattern": "^9\\d{8}$"
+          }
+        },
+        "required": ["reference", "phone"]
+      },
+      "Variant": {
+        "type": "object",
+        "properties": {
+          "gender": { "enum": ["HOMBRE", "MUJER", "UNISEX"], "type": "string" },
+          "size": {
+            "enum": [
+              "2",
+              "4",
+              "6",
+              "8",
+              "10",
+              "12",
+              "14",
+              "16",
+              "XS",
+              "S",
+              "M",
+              "L",
+              "XL",
+              "XXL",
+              "XXXL"
+            ],
+            "type": "string"
+          },
+          "additional": { "type": "number", "minimum": 0 }
+        },
+        "required": ["gender", "size", "additional"]
+      },
+      "AllowedImagesDTO": {
+        "type": "object",
+        "properties": {
+          "filename": { "type": "string" },
+          "contentType": {
+            "type": "string",
+            "enum": ["image/jpeg", "image/png", "image/webp", "image/avif"]
+          }
+        },
+        "required": ["filename", "contentType"]
+      },
+      "CreateClothesDTO": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "price": { "type": "number", "minimum": 0, "maximum": 1000 },
+          "variants": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Variant" }
+          },
+          "images": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/AllowedImagesDTO" }
+          }
+        },
+        "required": ["name", "description", "price", "variants", "images"]
+      },
+      "CreateDraftClothesDTO": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "price": { "type": "number", "minimum": 0 },
+          "images": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/AllowedImagesDTO" }
+          }
+        },
+        "required": ["name", "price", "images"]
+      },
+      "UpdateClothesDTO": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "price": { "type": "number", "minimum": 0 },
+          "isInEcommerce": { "type": "boolean" },
+          "isDraft": { "type": "boolean" }
+        }
+      },
+      "UpdateVariantDTO": {
+        "type": "object",
+        "properties": { "additional": { "type": "number", "minimum": 0 } },
+        "required": ["additional"]
+      },
+      "AddImagesToClothesDTO": {
+        "type": "object",
+        "properties": {
+          "images": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/AllowedImagesDTO" }
+          }
+        },
+        "required": ["images"]
+      },
+      "DeleteImageDTO": {
+        "type": "object",
+        "properties": { "url": { "type": "string", "format": "uri" } },
+        "required": ["url"]
+      },
+      "EmployeeRoleUpdateDTO": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string", "format": "email" },
+          "role": { "enum": ["owner", "admin", "seller"], "type": "string" }
+        },
+        "required": ["email", "role"]
+      },
+      "CreateEmployeeDTO": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string", "maxLength": 64, "format": "email" },
+          "names": { "type": "string", "maxLength": 64 },
+          "lastNames": { "type": "string", "maxLength": 64 },
+          "role": { "type": "string", "enum": ["admin", "seller"] }
+        },
+        "required": ["email", "names", "lastNames", "role"]
+      },
+      "CustomizationDTO": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "number": { "type": "number", "minimum": 0, "maximum": 100 },
+          "notes": { "type": "string" }
+        }
+      },
+      "QuoteDetailDTO": {
+        "type": "object",
+        "properties": {
+          "clothesVariantId": { "type": "string", "format": "uuid" },
+          "quantity": { "type": "number", "minimum": 1, "maximum": 100000 },
+          "customizations": {
+            "maxItems": 100,
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/CustomizationDTO" }
+          }
+        },
+        "required": ["clothesVariantId", "quantity"]
+      },
+      "CreateQuoteDTO": {
+        "type": "object",
+        "properties": {
+          "details": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/QuoteDetailDTO" }
+          },
+          "customerId": { "type": "string", "format": "uuid" }
+        },
+        "required": ["details", "customerId"]
+      },
+      "UpdateQuoteDTO": {
+        "type": "object",
+        "properties": {
+          "details": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/QuoteDetailDTO" }
+          }
+        },
+        "required": ["details"]
+      },
+      "AddressDTO": {
+        "type": "object",
+        "properties": {
+          "department": { "type": "string", "maxLength": 100 },
+          "city": { "type": "string", "maxLength": 100 },
+          "district": { "type": "string", "maxLength": 100 },
+          "street": { "type": "string", "maxLength": 255 }
+        },
+        "required": ["department", "city", "district", "street"]
+      },
+      "CreateOrderDTO": {
+        "type": "object",
+        "properties": {
+          "quoteId": { "type": "string", "format": "uuid" },
+          "address": { "$ref": "#/components/schemas/AddressDTO" },
+          "deliveryDate": { "type": "string" }
+        },
+        "required": ["quoteId", "address", "deliveryDate"]
+      },
+      "AddressEntity": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "department": { "type": "string" },
+          "city": { "type": "string" },
+          "district": { "type": "string" },
+          "street": { "type": "string" },
+          "tenantId": { "type": "string" },
+          "tenant": { "$ref": "#/components/schemas/TenantEntity" }
+        },
+        "required": [
+          "id",
+          "department",
+          "city",
+          "district",
+          "street",
+          "tenantId",
+          "tenant"
+        ]
+      },
+      "OrderEntity": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "total": { "type": "number" },
+          "status": {
+            "enum": ["IN_PRODUCTION", "DONE", "CANCELLED"],
+            "type": "string"
+          },
+          "createdAt": { "format": "date-time", "type": "string" },
+          "cancellationReason": { "type": "string", "nullable": true },
+          "deliveryDate": { "format": "date-time", "type": "string" },
+          "quoteId": { "type": "string" },
+          "quote": { "$ref": "#/components/schemas/QuoteEntity" },
+          "addressId": { "type": "string" },
+          "address": { "$ref": "#/components/schemas/AddressEntity" },
+          "tenantId": { "type": "string" },
+          "tenant": { "$ref": "#/components/schemas/TenantEntity" },
+          "updatedAt": { "format": "date-time", "type": "string" },
+          "deletedAt": { "format": "date-time", "type": "string" }
+        },
+        "required": [
+          "id",
+          "total",
+          "status",
+          "createdAt",
+          "cancellationReason",
+          "deliveryDate",
+          "quoteId",
+          "quote",
+          "addressId",
+          "address",
+          "tenantId",
+          "tenant",
+          "updatedAt",
+          "deletedAt"
+        ]
+      },
+      "UpdateOrderDTO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["IN_PRODUCTION", "DONE", "CANCELLED"]
+          }
+        },
+        "required": ["status"]
+      },
+      "CancelOrderDTO": {
+        "type": "object",
+        "properties": { "reason": { "type": "string", "maxLength": 500 } },
+        "required": ["reason"]
+      },
+      "CreateTenantDto": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "maxLength": 100 },
+          "ruc": { "type": "string", "pattern": "^(10|20)\\d{9}$" },
+          "address": { "type": "string", "maxLength": 256 }
+        },
+        "required": ["name"]
+      }
+    }
+  }
+}
