@@ -43,11 +43,24 @@ Variables canonicas:
 NEXT_PUBLIC_API_URL=
 NEXT_PUBLIC_AWS_COGNITO_REGION=
 NEXT_PUBLIC_AWS_COGNITO_CLIENT_ID=
+NEXT_PUBLIC_AWS_COGNITO_ENDPOINT=
 ASSETS_HOSTNAME=
 ```
 
 No usar `NEXT_PUBLIC_AWS_COGNITO_APP_CLIENT_ID`; el nombre valido es
 `NEXT_PUBLIC_AWS_COGNITO_CLIENT_ID`.
+
+`NEXT_PUBLIC_AWS_COGNITO_ENDPOINT` es opcional y se usa solo en desarrollo
+local para apuntar a un emulador compatible, por ejemplo
+`http://localhost:9229`. Si esta vacia o no existe, el SDK usa Cognito AWS de
+la region configurada.
+
+Para el stack local, el frontend normalmente apunta a una API local y Cognito
+Local en `http://localhost:9229`. Las credenciales AWS de emuladores y tokens
+internos son solo del backend: nunca exponerlos con prefijo `NEXT_PUBLIC_`.
+Las subidas con URLs firmadas salen desde el navegador; el storage local o
+remoto debe permitir CORS desde el origen del frontend (`http://localhost:3002`
+en desarrollo).
 
 `ASSETS_HOSTNAME` debe ser solo el hostname, sin protocolo. Ejemplos:
 
@@ -102,6 +115,14 @@ Ejemplo importante:
 - En detalles (`/quotes/{id}`, `/orders/{id}`), `404` debe seguir siendo error
   real de "no encontrado".
 
+Contrato de empleados:
+
+- La tabla de empleados necesita `roles: string[]` en la respuesta de
+  `GET /admin/employees` para mostrar los badges. Si el backend no incluye esa
+  propiedad, el cliente la normaliza como `[]` y la celda queda vacia.
+- Los valores internos son `owner`, `admin` y `seller`; en la tabla se muestran
+  como `Dueño`, `Administrador` y `Vendedor`.
+
 ## Modulos Migrados
 
 Los modulos principales ya fueron migrados a llamadas cliente:
@@ -115,6 +136,10 @@ Los modulos principales ya fueron migrados a llamadas cliente:
 - Dashboard/layout/perfil
 
 Ecommerce fue eliminado porque el backend lo depreco.
+
+El dashboard de admin no consume metricas. Muestra un collage de prendas con
+`getClothesClient` en `modules/clothes/ui/components/clothes-collage.tsx`; cada
+tile enlaza al detalle usando `detailPath`.
 
 No deben volver a crearse:
 
@@ -172,6 +197,19 @@ No volver a rutas tipo:
 /admin/clothes/{id}/edit
 ```
 
+## Validaciones De Dominio
+
+- Prendas: descripcion vacia o de hasta 1024 caracteres; al crear, una
+  descripcion vacia se omite del payload. Precio base entre 1 y 1000; precio
+  adicional de variantes entre 0 y 1000.
+- Cotizaciones: cantidad por detalle es entero entre 1 y 100000. Las
+  personalizaciones se limitan a `min(cantidad, 100)`. Sus atributos son
+  opcionales; strings vacios se transforman en atributos omitidos. Cuando se
+  envian: nombre 1..100, numero 0..100 y notas 1..1024.
+- Ordenes: fecha de entrega no puede estar en el pasado, sin maximo artificial
+  de dias. Departamento, ciudad y distrito son 1..100; direccion exacta es
+  1..255.
+
 ## Despliegue
 
 Para hosting estatico:
@@ -218,6 +256,9 @@ pnpm exec eslint <archivos-tocados>
 El lint global puede reportar un error preexistente en
 `components/ui/sidebar.tsx` por `Math.random()` durante render. No pertenece a
 la migracion de Server Actions.
+
+`components.json` solo configura el CLI de shadcn. No es necesario en runtime;
+si se elimina, restaurarlo antes de usar el CLI para agregar componentes.
 
 ## Roadmap
 
