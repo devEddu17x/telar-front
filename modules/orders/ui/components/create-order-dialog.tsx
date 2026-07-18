@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation'
 import { CalendarIcon, PackageIcon } from 'lucide-react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { addDays, format, startOfDay } from 'date-fns'
+import { format, startOfDay } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -41,7 +41,6 @@ import {
   PopoverTrigger
 } from '@/components/ui/popover'
 
-import { DELIVERY_DATE_MAX_DAYS, DELIVERY_DATE_MIN_DAYS } from '../../constants'
 import { createOrderClient } from '../../lib/orders-client'
 import {
   createOrderDefaultValues,
@@ -87,8 +86,7 @@ export function CreateOrderDialog({
   })
   const today = startOfDay(new Date(limaStr))
 
-  const minDate = addDays(today, DELIVERY_DATE_MIN_DAYS)
-  const maxDate = addDays(today, DELIVERY_DATE_MAX_DAYS)
+  const minDate = today
 
   const onSubmit = (values: CreateOrderFormValues) => {
     startTransition(async () => {
@@ -185,15 +183,12 @@ export function CreateOrderDialog({
                         mode='single'
                         selected={field.value}
                         onSelect={field.onChange}
-                        disabled={date => date < minDate || date > maxDate}
+                        disabled={date => date < minDate}
                         initialFocus
                       />
                     </PopoverContent>
                   </Popover>
-                  <FormDescription>
-                    Entre {DELIVERY_DATE_MIN_DAYS} y {DELIVERY_DATE_MAX_DAYS}{' '}
-                    días desde hoy
-                  </FormDescription>
+                  <FormDescription>No se permiten fechas pasadas</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

@@ -29,7 +29,7 @@ export function AddressForm() {
             <FormItem>
               <FormLabel>Departamento</FormLabel>
               <FormControl>
-                <Input placeholder='Ej: Lima' {...field} />
+                <Input placeholder='Ej: La Libertad' maxLength={100} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -44,7 +44,7 @@ export function AddressForm() {
             <FormItem>
               <FormLabel>Provincia/Ciudad</FormLabel>
               <FormControl>
-                <Input placeholder='Ej: Lima' {...field} />
+                <Input placeholder='Ej: Trujillo' maxLength={100} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -60,7 +60,7 @@ export function AddressForm() {
           <FormItem>
             <FormLabel>Distrito</FormLabel>
             <FormControl>
-              <Input placeholder='Ej: Miraflores' {...field} />
+              <Input placeholder='Ej: Moche' maxLength={100} {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -75,7 +75,11 @@ export function AddressForm() {
           <FormItem>
             <FormLabel>Dirección exacta</FormLabel>
             <FormControl>
-              <Input {...field} placeholder='Ej: Av. Larco 123' />
+              <Input
+                {...field}
+                placeholder='Ej: Av. Heroica 123'
+                maxLength={255}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
