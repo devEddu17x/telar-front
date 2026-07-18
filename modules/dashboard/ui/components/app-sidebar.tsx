@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 
 import {
@@ -19,6 +20,7 @@ import {
 
 import { signOutClient } from '@/modules/auth/lib/auth-client'
 import type { Role } from '@/modules/auth/types'
+import telarLogo from '@/app/telar.webp'
 
 import { ClientOnly } from '@/components/client-only'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
@@ -174,12 +176,14 @@ export function AppSidebar({ user }: AppSidebarProps) {
   return (
     <ClientOnly>
       <Sidebar>
-        <SidebarHeader className='border-b p-4'>
-          <Link href='/' className='flex items-center gap-2'>
-            <div className='bg-primary text-primary-foreground flex h-8 w-8 items-center justify-center rounded-md text-sm font-bold'>
-              D
-            </div>
-            <span className='text-lg font-semibold'>TELAR</span>
+        <SidebarHeader className='border-sidebar-border/80 bg-sidebar border-b px-4 py-3'>
+          <Link href='/' className='flex w-full justify-center'>
+            <Image
+              src={telarLogo}
+              alt='Telar'
+              priority
+              className='h-14 w-auto object-contain'
+            />
           </Link>
         </SidebarHeader>
 
