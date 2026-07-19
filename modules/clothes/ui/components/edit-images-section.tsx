@@ -3,7 +3,6 @@
 import { useCallback, useState, useTransition } from 'react'
 
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
 
 import { ImagePlus, Star, Trash2, Upload } from 'lucide-react'
 
@@ -57,7 +56,6 @@ export function EditImagesSection({
   images,
   onChanged
 }: EditImagesSectionProps) {
-  const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [isDragging, setIsDragging] = useState(false)
   const [newImages, setNewImages] = useState<NewImage[]>([])
@@ -157,7 +155,6 @@ export function EditImagesSection({
       if (result.success) {
         toast.success('Imagen eliminada')
         onChanged?.()
-        router.refresh()
       } else {
         toast.error(result.error || 'Error al eliminar imagen')
       }
@@ -190,7 +187,6 @@ export function EditImagesSection({
 
           toast.success('Imágenes subidas exitosamente')
           onChanged?.()
-          router.refresh()
         } catch (uploadError) {
           console.error('Error uploading images:', uploadError)
           toast.error('Error al subir las imágenes')
