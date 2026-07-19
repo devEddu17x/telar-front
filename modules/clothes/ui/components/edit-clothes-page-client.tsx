@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { AlertCircle } from 'lucide-react'
 
@@ -46,13 +46,18 @@ export function EditClothesPageClient({ id }: EditClothesPageClientProps) {
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [reloadKey, setReloadKey] = useState(0)
+  const loadedClothesIdRef = useRef<string | null>(null)
 
   useEffect(() => {
     let isCurrent = true
 
     async function loadClothes() {
-      setIsLoading(true)
-      setError(null)
+      const isInitialLoad = loadedClothesIdRef.current !== id
+
+      if (isInitialLoad) {
+        setIsLoading(true)
+        setError(null)
+      }
 
       const result = await getClothesByIdClient(id)
 
@@ -60,12 +65,16 @@ export function EditClothesPageClient({ id }: EditClothesPageClientProps) {
 
       if (result.success && result.data) {
         setClothes(result.data)
-      } else {
+        loadedClothesIdRef.current = id
+        setError(null)
+      } else if (isInitialLoad) {
         setClothes(null)
         setError(result.error || 'No se pudo cargar la prenda')
       }
 
-      setIsLoading(false)
+      if (isInitialLoad) {
+        setIsLoading(false)
+      }
     }
 
     void loadClothes()
